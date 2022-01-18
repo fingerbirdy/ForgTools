@@ -4,7 +4,6 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
 
 package com.fingerbirdy.highways.forgtools;
 
-import com.fingerbirdy.highways.forgtools.Event.ClientTick;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 
@@ -16,9 +15,9 @@ import static com.fingerbirdy.highways.forgtools.ForgTools.mc;
 
 public class Blueprint {
 
-    public static LinkedHashMap<BlockPos, Block> blueprint = new LinkedHashMap<>(); // placing
-    public static LinkedHashMap<BlockPos, Block> blueprint_digging = new LinkedHashMap<>(); // breaking retry
-    public static LinkedHashMap<BlockPos, Object[]> retry_blueprint = new LinkedHashMap<>(); // placing, Object[] should consist of Block to_place, int attempted_tick
+    public static final LinkedHashMap<BlockPos, Block> blueprint = new LinkedHashMap<>(); // placing
+    public static final LinkedHashMap<BlockPos, Block> blueprint_digging = new LinkedHashMap<>(); // breaking retry
+    public static final LinkedHashMap<BlockPos, Object[]> retry_blueprint = new LinkedHashMap<>(); // placing, Object[] should consist of Block to_place, int attempted_tick
 
     // Generate blueprint for tunneling and paving
     public static void generate_build () {
@@ -91,10 +90,10 @@ public class Blueprint {
 
                 for (int i = 0; i < 3; i++) {
 
-                    for (int j = (int) Math.ceil(width / -2); j <= width / 2; j++) {
+                    for (int j = (int) Math.ceil(width / -2F); j <= width / 2; j++) {
 
                         int y_coord;
-                        if (j == (int) Math.ceil(width / -2) || j > width / 2 - 1) {
+                        if (j == (int) Math.ceil(width / -2F) || j > width / 2 - 1) {
                             y_coord = Session.y_position;
                         } else {
                             y_coord = Session.y_position - 1;

@@ -1,6 +1,6 @@
-package com.fingerbirdy.highways.forgtools.Event;
+package com.fingerbirdy.highways.forgtools.event;
 
-import com.fingerbirdy.highways.forgtools.Util.ServerTps;
+import com.fingerbirdy.highways.forgtools.util.ServerTps;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketTimeUpdate;
@@ -15,6 +15,8 @@ public class ServerPacket {
             ServerTps.received_time_update_packet();
 
         }
+
+        ctx.fireChannelRead(msg);
 
     }
 

@@ -1,4 +1,4 @@
-package com.fingerbirdy.highways.forgtools.Command;
+package com.fingerbirdy.highways.forgtools.command;
 
 import com.fingerbirdy.highways.forgtools.Config;
 import com.fingerbirdy.highways.forgtools.ForgTools;
@@ -8,9 +8,9 @@ import java.util.ArrayList;
 
 public class Start {
 
-    public static ArrayList<String> start_warnings = new ArrayList<>();
+    public static final ArrayList<String> start_warnings = new ArrayList<>();
 
-    public static boolean execute(String[] args) {
+    public static void execute(String[] args) {
 
         try {
 
@@ -19,13 +19,11 @@ public class Start {
                 ForgTools.sendClientChat(warning, true);
             }
             ForgTools.enabled = Session.start();
-            return true;
 
         } catch (Exception e) {
 
             ForgTools.sendClientChat("Failed to start.", true);
-            Stop.execute((Config.config.get("prefix").toString() + "stop failed_to_start").split(" "));
-            return false;
+            Stop.execute((Config.config.get("prefix") + "stop failed_to_start").split(" "));
 
         }
 

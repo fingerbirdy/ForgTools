@@ -10,15 +10,14 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
  */
 
 /* TODO
-*   Github tutorial (1/17/21)
-*   In Dig.java::calculate_ticks, do not assume efficiency 5 diamond 1/15/21 (haha good luck)
+*   Github tutorial (1/17/22)
+*   In Dig.java::calculate_ticks, do not assume efficiency 5 diamond 1/15/22 (haha good luck)
 *   Improve grind obsidian placements
-*   Calculate tps rather than only dynamic multiplier in Util.ServerTps 1/18/21
 */
 
 package com.fingerbirdy.highways.forgtools;
 
-import com.fingerbirdy.highways.forgtools.Event.ClientConnectedToServer;
+import com.fingerbirdy.highways.forgtools.event.ClientConnectedToServer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -93,6 +92,8 @@ public class ForgTools {
 
     @Mod.EventHandler
     public void postinit(FMLPostInitializationEvent event) {
+
+        System.out.println("ForgTools initialized!");
 
     }
 

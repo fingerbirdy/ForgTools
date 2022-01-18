@@ -1,4 +1,4 @@
-package com.fingerbirdy.highways.forgtools.Util;
+package com.fingerbirdy.highways.forgtools.util;
 
 import com.fingerbirdy.highways.forgtools.ForgTools;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class ServerTps {
 
     private static final int cache_length = 30;
-    private static ArrayList<Double> tick_rates = new ArrayList<>();
+    private static final ArrayList<Double> tick_rates = new ArrayList<>();
     private static long last_time_update = -1L;
 
     public static double tick_rate = 20D;

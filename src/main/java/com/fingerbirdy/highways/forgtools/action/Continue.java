@@ -1,4 +1,4 @@
-package com.fingerbirdy.highways.forgtools.Action;
+package com.fingerbirdy.highways.forgtools.action;
 
 import com.fingerbirdy.highways.forgtools.Enum;
 import com.fingerbirdy.highways.forgtools.Session;

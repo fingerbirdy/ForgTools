@@ -1,11 +1,8 @@
-package com.fingerbirdy.highways.forgtools.Action;
+package com.fingerbirdy.highways.forgtools.action;
 
-import com.fingerbirdy.highways.forgtools.ForgTools;
 import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CPacketClickWindow;
 
 import static com.fingerbirdy.highways.forgtools.ForgTools.mc;
 

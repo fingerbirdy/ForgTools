@@ -1,7 +1,6 @@
 package com.fingerbirdy.highways.forgtools;
 
-import com.fingerbirdy.highways.forgtools.Action.Dig;
-import com.fingerbirdy.highways.forgtools.Action.Place;
+import com.fingerbirdy.highways.forgtools.action.Dig;
 
 import java.util.ArrayList;
 
@@ -17,7 +16,6 @@ public class Session {
         Blueprint.blueprint.clear();
         Blueprint.blueprint_digging.clear();
         Blueprint.retry_blueprint.clear();
-        Place.placing = false;
         Dig.digging = false;
 
         // Check for alignment errors
@@ -89,6 +87,6 @@ public class Session {
     public static int axis_offset = 0;
     public static int y_position = -1;
     public static Enum.direction direction = Enum.direction.PX;
-    public static ArrayList<String> exceptions = new ArrayList<>();
+    public static final ArrayList<String> exceptions = new ArrayList<>();
 
 }

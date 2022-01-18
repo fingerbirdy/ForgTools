@@ -4,7 +4,7 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
 
 package com.fingerbirdy.highways.forgtools;
 
-import com.fingerbirdy.highways.forgtools.Command.Start;
+import com.fingerbirdy.highways.forgtools.command.Start;
 import net.minecraft.block.Block;
 
 import java.io.PrintWriter;
@@ -17,9 +17,9 @@ import java.util.Map;
 
 public class Config {
 
-    public static HashMap<String, String> config = new HashMap<>();
+    public static final HashMap<String, String> config = new HashMap<>();
 
-    public static boolean init() {
+    public static void init() {
 
         // MISC
         config.put("prefix", "?"); // Char
@@ -109,11 +109,9 @@ public class Config {
 
         save();
 
-        return true;
-
     }
 
-    public static boolean save() {
+    public static void save() {
 
         PrintWriter config_file_out = null;
         boolean config_save_success = false;
@@ -121,13 +119,13 @@ public class Config {
         try {
 
             config_file_out = new PrintWriter(ForgTools.mc.gameDir + "\\ForgTools\\config\\config.txt");
-            String config_file_out_value = "";
+            StringBuilder config_file_out_value = new StringBuilder();
 
             for (Map.Entry<String, String> entry : config.entrySet()) {
-                config_file_out_value += entry.getKey() + "=" + entry.getValue() + "\n";
+                config_file_out_value.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
             }
 
-            config_file_out.write(config_file_out_value);
+            config_file_out.write(config_file_out_value.toString());
 
             config_save_success = true;
 
@@ -138,8 +136,6 @@ public class Config {
                 config_file_out.close();
             }
         }
-
-        return config_save_success;
 
     }
 

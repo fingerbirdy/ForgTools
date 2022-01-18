@@ -1,4 +1,4 @@
-package com.fingerbirdy.highways.forgtools.Command;
+package com.fingerbirdy.highways.forgtools.command;
 
 import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.fingerbirdy.highways.forgtools.Session;
@@ -13,7 +13,7 @@ import static com.fingerbirdy.highways.forgtools.ForgTools.mc;
 
 public class Stop {
 
-    public static boolean execute(String[] args) {
+    public static void execute(String[] args) {
 
         ForgTools.enabled = false;
 
@@ -34,7 +34,7 @@ public class Stop {
                 FileWriter exceptions_file = new FileWriter(path);
                 exceptions_file.append("The below contents contain unintended results. Please send this file to fingerbirdy#8056.");
                 for (int i = 0; i < Session.exceptions.size(); i++) {
-                    exceptions_file.append("\n" + Session.exceptions.get(i));
+                    exceptions_file.append("\n").append(Session.exceptions.get(i));
                 }
                 exceptions_file.close();
 
@@ -43,8 +43,6 @@ public class Stop {
             }
 
         }
-
-        return true;
 
     }
 

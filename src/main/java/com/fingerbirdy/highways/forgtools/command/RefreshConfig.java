@@ -1,4 +1,4 @@
-package com.fingerbirdy.highways.forgtools.Command;
+package com.fingerbirdy.highways.forgtools.command;
 
 import com.fingerbirdy.highways.forgtools.Config;
 
