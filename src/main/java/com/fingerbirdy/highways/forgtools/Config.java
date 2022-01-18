@@ -1,176 +1,145 @@
+/*
+This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord if you would like to use any code that is within this class.
+ */
+
 package com.fingerbirdy.highways.forgtools;
 
-import com.fingerbirdy.highways.forgtools.module.Highways.Highways;
-import org.apache.commons.io.FileUtils;
+import com.fingerbirdy.highways.forgtools.Command.Start;
+import net.minecraft.block.Block;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.util.*;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Config {
 
-    private static HashMap<String, Object> defaults;
-    private static final String[] CONFIGKEYS = "highways/build/width highways/build/height highways/build/railings highways/build/mode".split(" ");
-    public static HashMap<String, Object> config;
+    public static HashMap<String, String> config = new HashMap<>();
 
-    public static void init() {
-        defaults = setDefaults();
-        config = defaults;
-        config = setConfig();
-    }
+    public static boolean init() {
 
-    private static HashMap<String, Object> setDefaults() {
-
-        HashMap<String, Object> values = new HashMap<>();
-        values.put("autolog/enabled", false);
-        values.put("autolog/health", 10);
-        values.put("highways/build/width", 7);
-        values.put("highways/build/height", 4);
-        values.put("highways/build/railings", true);
-        values.put("highways/build/mode", Highways.Mode.pave);
-        return values;
-
-    }
-
-    private static final HashMap<String, Object> setConfig() {
+        // MISC
+        config.put("prefix", "?"); // Char
+        config.put("allowed_logging_severity", "0"); // int
+        // BUILD
+        config.put("build_mode", "PAVE"); // Enum.build_mode
+        config.put("width", "7"); // int
+        config.put("height", "4"); // int
+        config.put("railings", "true"); // boolean
+        config.put("direction", "PP"); // Enum.direction
+        config.put("material", "obsidian"); // Block.getBlockFromName(String)
+        // BEHAVIOUR
+        config.put("allow_axis_offset", "true"); // boolean
+        config.put("allow_incorrect_y_pos", "true"); // boolean
+        config.put("max_reach", "5"); // float
+        config.put("target_obsidian_refill_stacks", "3"); // int
+        config.put("obsidian_refill_threshold", "16"); // int
+        config.put("delay_ticks", "2"); // int
 
         try {
-            File configFile = new File(".\\ForgTools\\config.txt");
-            if (!configFile.exists()) {
-                configFile.createNewFile();
-            }
 
-            HashMap<String, Object> values = config;
-            String[] configContents = FileUtils.readFileToString(configFile).split("\n");
+            List<String> lines = Files.readAllLines(Paths.get(ForgTools.mc.gameDir + "\\ForgTools\\config\\config.txt"), StandardCharsets.UTF_8);
 
-            for (int i = 0; i < configContents.length; i++) {
+            for (String line : lines) {
 
                 try {
 
-                    String[] configLine = configContents[i].split("=");
-                    config.replace(configLine[0], parseConfigValue(configLine));
+                    String line_key = line.split("=")[0];
+                    String line_value = line.split("=")[1];
+
+                    // integers
+                    if (line_key.equals("allowed_logging_severity") || line_key.equals("width") || line_key.equals("height") || line_key.equals("target_obsidian_refill_stacks") || line_key.equals("obsidian_refill_threshold") || line_key.equals("delay_ticks")) {
+                        Integer.parseInt(line_value);
+                        config.put(line_key, line_value);
+                        continue;
+                    }
+                    // floats
+                    if (line_key.equals("max_reach")) {
+                        Float.parseFloat(line_value);
+                        config.put(line_key, line_value);
+                        continue;
+                    }
+                    // chars
+                    if (line_key.equals("prefix")) {
+                        config.put(line_key, String.valueOf(line_value.charAt(0)));
+                        continue;
+                    }
+                    // boolean
+                    if (line_key.equals("railings") || line_key.equals("allow_axis_offset") || line_key.equals("allowed_incorrect_y_pos")) {
+                        if (line_value.equals("true")) { config.put(line_key, "true"); }
+                        else if (line_value.equals("false")) { config.put(line_key, "false"); }
+                        else { throw new Exception(); }
+                        continue;
+                    }
+                    // Enum.build_mode
+                    if (line_key.equals("build_mode")) {
+                        config.put(line_key, Enum.build_mode.valueOf(line_value).name());
+                        continue;
+                    }
+                    // Enum.direction
+                    if (line_key.equals("direction")) {
+                        config.put(line_key, Enum.direction.valueOf(line_value).name());
+                        continue;
+                    }
+                    // Block.getBlockFromName(String)
+                    if (line_key.equals("material")) {
+                        if (Block.getBlockFromName(line_value) != null) {
+                            config.put(line_key, line_value);
+                        } else {
+                            throw new Exception();
+                        }
+                        continue;
+                    }
+
+                    throw new Exception();
 
                 } catch (Exception e) {
-
-                    e.printStackTrace();
-
+                    System.out.println("Invalid key/value for line " + line);
                 }
 
             }
 
-            save();
-            return values;
-
         } catch (Exception e) {
-            ForgTools.logger.warn("Failed to read config file; enabling default config.");
-            return defaults;
+            e.printStackTrace();
+            Start.start_warnings.add("Failed to load config, restoring defaults.");
         }
+
+        save();
+
+        return true;
 
     }
 
-    public static Object parseConfigValue(String[] values) {
+    public static boolean save() {
 
-        if (values[1].equals("true")) {
-            return true;
-        }
-        if (values[1].equals("false")) {
-            return false;
-        }
-        try {
-            return Integer.parseInt(values[1]);
-        } catch (Exception e) {
-
-            if (values[0].equals("highways/build/mode")) {
-                if (values[1].equals("pave")) {
-                    return Highways.Mode.pave;
-                } else if (values[1].equals("tunnel")) {
-                    return Highways.Mode.tunnel;
-                }
-            }
-
-            return values[1];
-
-        }
-
-    }
-
-    public static void parseCommands(String[] args) {
-
-        if (args.length == 2 && args[1].equals("keys")) {
-
-            ForgTools.sendClientChat("List of config keys: ", true);
-            for (String element : CONFIGKEYS) {
-                ForgTools.sendClientChat(element, true);
-            }
-            return;
-
-        }
-
-        if (args.length == 3 && args[1].equals("get")) {
-
-            if (config.containsKey(args[2])) {
-
-                ForgTools.sendClientChat("Key " + args[2] + ": " + config.get(args[2]), true);
-                return;
-
-            } else {
-
-                ForgTools.sendClientChat("Key " + args[2] + " does not exist!", true);
-                return;
-
-            }
-
-        }
-
-        if (args.length <= 2) {
-
-            ForgTools.sendClientChat("Invalid usage! Use \n" + ForgTools.CommandPrefix + "c [key] [value] / c keys / c get [key]", true);
-            return;
-
-        }
-
-        if (config.containsKey(args[1])) {
-
-            config.replace(args[1], parseConfigValue(new String[] {args[1], args[2]}));
-            save();
-            ForgTools.sendClientChat("Key " + args[1] + " set to " + args[2], true);
-
-            return;
-
-        } else {
-
-            ForgTools.sendClientChat(args[1] + " is not a config key! Use \"" + ForgTools.CommandPrefix + "c keys\" for a list of config keys", true);
-            return;
-
-        }
-
-    }
-
-    public static void save() {
-
-        ForgTools.logger.warn("---------------------------- " + config.get("highways/build/width"));
-
-        StringBuilder configOutput = new StringBuilder();
-
-        for (String configkey : CONFIGKEYS) {
-
-            if (config.containsKey(configkey)) {
-
-                configOutput.append(configkey).append("=").append(config.get(configkey)).append("\n");
-
-            }
-
-        }
+        PrintWriter config_file_out = null;
+        boolean config_save_success = false;
 
         try {
-            FileWriter configFile = new FileWriter(".\\ForgTools\\config.txt");
-            configFile.write(configOutput.toString());
-            configFile.close();
+
+            config_file_out = new PrintWriter(ForgTools.mc.gameDir + "\\ForgTools\\config\\config.txt");
+            String config_file_out_value = "";
+
+            for (Map.Entry<String, String> entry : config.entrySet()) {
+                config_file_out_value += entry.getKey() + "=" + entry.getValue() + "\n";
+            }
+
+            config_file_out.write(config_file_out_value);
+
+            config_save_success = true;
+
         } catch (Exception e) {
-            ForgTools.logger.warn("Failed to save config file; config will not save on reboot.");
+            e.printStackTrace();
+        } finally {
+            if (config_file_out != null) {
+                config_file_out.close();
+            }
         }
 
-        ForgTools.logger.warn("---------------------------- " + config.get("highways/build/width"));
+        return config_save_success;
 
     }
 
