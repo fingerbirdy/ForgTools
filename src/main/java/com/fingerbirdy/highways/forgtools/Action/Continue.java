@@ -2,7 +2,6 @@ package com.fingerbirdy.highways.forgtools.Action;
 
 import com.fingerbirdy.highways.forgtools.Enum;
 import com.fingerbirdy.highways.forgtools.Session;
-import com.fingerbirdy.highways.forgtools.Util.BaritoneHelper;
 
 import static com.fingerbirdy.highways.forgtools.ForgTools.mc;
 
@@ -71,7 +70,6 @@ public class Continue {
             goal_x = calculated_goal_x;
             goal_y = Session.y_position;
             goal_z = calculated_goal_z;
-            BaritoneHelper.go_to(calculated_goal_x, Session.y_position, calculated_goal_z);
             going = true;
 
         }

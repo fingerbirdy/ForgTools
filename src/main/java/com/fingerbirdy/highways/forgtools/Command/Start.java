@@ -3,7 +3,6 @@ package com.fingerbirdy.highways.forgtools.Command;
 import com.fingerbirdy.highways.forgtools.Config;
 import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.fingerbirdy.highways.forgtools.Session;
-import com.fingerbirdy.highways.forgtools.Util.BaritoneHelper;
 
 import java.util.ArrayList;
 
@@ -19,7 +18,6 @@ public class Start {
             for (String warning : start_warnings) {
                 ForgTools.sendClientChat(warning, true);
             }
-            BaritoneHelper.setup();
             ForgTools.enabled = Session.start();
             return true;
 

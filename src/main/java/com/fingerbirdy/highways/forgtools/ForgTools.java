@@ -10,17 +10,19 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
  */
 
 /* TODO
-*   In Inventory.java::swap, reduce packet count 1/15/21
-*   In Dig.java::calculate_ticks, do not assume efficiency 5 diamond 1/15/21
+*   Github tutorial (1/17/21)
+*   In Dig.java::calculate_ticks, do not assume efficiency 5 diamond 1/15/21 (haha good luck)
 *   Improve grind obsidian placements
-*   Make dynamic breaking with tps
+*   Calculate tps rather than only dynamic multiplier in Util.ServerTps 1/18/21
 */
 
 package com.fingerbirdy.highways.forgtools;
 
+import com.fingerbirdy.highways.forgtools.Event.ClientConnectedToServer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -50,10 +52,19 @@ public class ForgTools {
 
     public static void sendClientChat(String message, Boolean usePrefix) {
 
-        if (usePrefix) {
-            mc.player.sendMessage(new TextComponentString(MESSAGE_PREFIX + message));
-        } else {
-            mc.player.sendMessage(new TextComponentString(message));
+        try {
+
+            if (usePrefix) {
+                mc.player.sendMessage(new TextComponentString(MESSAGE_PREFIX + message));
+            } else {
+                mc.player.sendMessage(new TextComponentString(message));
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            System.out.println("Failed to send message " + message);
+
         }
 
     }
@@ -68,11 +79,15 @@ public class ForgTools {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
 
+        // Creates empty files if they do not exist
         try { Files.createDirectories(Paths.get(mc.gameDir.getAbsolutePath() + "\\ForgTools")); } catch (IOException e) { e.printStackTrace(); }
         try { Files.createDirectories(Paths.get(mc.gameDir.getAbsolutePath() + "\\ForgTools\\logs")); } catch (IOException e) { e.printStackTrace(); }
         try { Files.createDirectories(Paths.get(mc.gameDir.getAbsolutePath() + "\\ForgTools\\config")); } catch (IOException e) { e.printStackTrace(); }
         try { Files.createFile(Paths.get(mc.gameDir.getAbsolutePath() + "\\ForgTools\\config\\config.txt")); } catch (IOException e) { e.printStackTrace(); }
         Config.init();
+
+        // Register non-static events
+        MinecraftForge.EVENT_BUS.register(new ClientConnectedToServer());
 
     }
 

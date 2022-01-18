@@ -19,8 +19,6 @@ public class Process {
 
     public static void tick() {
 
-        ForgTools.sendClientChat(status.name(), true);
-
         // Checks delay ticks
         if (ClientTick.ticks % Integer.parseInt(Config.config.get("delay_ticks")) != 0) {
             return;
