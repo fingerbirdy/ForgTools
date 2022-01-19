@@ -61,6 +61,7 @@ public class Dig {
 
     }
 
+    // todo: suffer
     private static int calculate_ticks(BlockPos block) {
 
         return (int) Math.ceil(32 / Math.ceil(mc.player.world.getBlockState(block).getBlockHardness(mc.player.world, block)) * 20 * ServerTps.dynamic_delay_multiplier);

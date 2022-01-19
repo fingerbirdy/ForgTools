@@ -7,6 +7,7 @@ import com.fingerbirdy.highways.forgtools.ForgTools;
 public class Debug {
 
     public static boolean continu = false;
+    public static boolean render = false;
 
     public static void execute(String[] args) {
 
@@ -16,6 +17,12 @@ public class Debug {
         else if (args[1].equals("continue")) {
 
             continu = !continu;
+
+        }
+
+        else if (args[1].equals("render")) {
+
+            render = !render;
 
         }
 

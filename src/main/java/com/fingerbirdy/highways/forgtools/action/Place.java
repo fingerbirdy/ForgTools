@@ -82,25 +82,28 @@ public class Place {
         if ((pos_material != Material.AIR && pos_material != Material.WATER && pos_material != Material.LAVA)) {
 
             Blueprint.blueprint_digging.put(current_place_pos, Block.getBlockById(0));
+            return;
 
         }
 
         // The placing
-        if (Inventory.set_hot_bar_0(Item.getIdFromItem(Item.getItemFromBlock(block)))) {
 
-            placing_stuck_ticks = 0;
-            Object[] block_and_face = get_face(pos);
-            if (Objects.isNull(block_and_face)) {
-                return;
-            }
+        if (mc.player.inventory.getCurrentItem().getItem() != Item.getItemFromBlock(block)) {
 
-            NetHandlerPlayClient connection = mc.getConnection();
-            connection.sendPacket(new CPacketPlayerTryUseItemOnBlock((BlockPos) block_and_face[0], (EnumFacing) block_and_face[1], EnumHand.MAIN_HAND, 0, 0, 0));
-            mc.player.swingArm(EnumHand.MAIN_HAND);
-
-        } else {
+            Inventory.set_hot_bar_0(Item.getIdFromItem(Item.getItemFromBlock(block)));
+            return;
 
         }
+
+        placing_stuck_ticks = 0;
+        Object[] block_and_face = get_face(pos);
+        if (Objects.isNull(block_and_face)) {
+            return;
+        }
+
+        NetHandlerPlayClient connection = mc.getConnection();
+        connection.sendPacket(new CPacketPlayerTryUseItemOnBlock((BlockPos) block_and_face[0], (EnumFacing) block_and_face[1], EnumHand.MAIN_HAND, 0, 0, 0));
+        mc.player.swingArm(EnumHand.MAIN_HAND);
 
     }
 

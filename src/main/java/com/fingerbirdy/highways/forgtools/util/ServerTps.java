@@ -35,7 +35,6 @@ public class ServerTps {
         dynamic_delay_multiplier = 20D / tick_rate;
 
         last_time_update = System.nanoTime();
-        ForgTools.sendClientChat(tick_rate + " " + dynamic_delay_multiplier, true);
 
     }
 

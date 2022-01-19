@@ -18,6 +18,7 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
 package com.fingerbirdy.highways.forgtools;
 
 import com.fingerbirdy.highways.forgtools.event.ClientConnectedToServer;
+import com.fingerbirdy.highways.forgtools.gui.Settings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -26,10 +27,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @Mod(
         modid = ForgTools.MOD_ID,
@@ -78,12 +75,9 @@ public class ForgTools {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
 
-        // Creates empty files if they do not exist
-        try { Files.createDirectories(Paths.get(mc.gameDir.getAbsolutePath() + "\\ForgTools")); } catch (IOException e) { e.printStackTrace(); }
-        try { Files.createDirectories(Paths.get(mc.gameDir.getAbsolutePath() + "\\ForgTools\\logs")); } catch (IOException e) { e.printStackTrace(); }
-        try { Files.createDirectories(Paths.get(mc.gameDir.getAbsolutePath() + "\\ForgTools\\config")); } catch (IOException e) { e.printStackTrace(); }
-        try { Files.createFile(Paths.get(mc.gameDir.getAbsolutePath() + "\\ForgTools\\config\\config.txt")); } catch (IOException e) { e.printStackTrace(); }
+        FileSystem.init();
         Config.init();
+        Settings.load();
 
         // Register non-static events
         MinecraftForge.EVENT_BUS.register(new ClientConnectedToServer());
