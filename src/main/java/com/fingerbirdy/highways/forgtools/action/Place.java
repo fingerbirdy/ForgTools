@@ -2,10 +2,10 @@
 This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord if you would like to use any code that is within this class.
  */
 
-package com.fingerbirdy.highways.forgtools.Action;
+package com.fingerbirdy.highways.forgtools.action;
 
 import com.fingerbirdy.highways.forgtools.Blueprint;
-import com.fingerbirdy.highways.forgtools.Event.ClientTick;
+import com.fingerbirdy.highways.forgtools.event.ClientTick;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -21,9 +21,8 @@ import static com.fingerbirdy.highways.forgtools.ForgTools.mc;
 
 public class Place {
 
-    public static boolean placing = false;
-    private static BlockPos current_place_pos = null;
-    private static Block current_place_block = null;
+    public static BlockPos current_place_pos = null;
+    public static Block current_place_block = null;
     public static int placing_stuck_ticks = 0;
 
     public static void tick() {
@@ -76,36 +75,35 @@ public class Place {
 
     }
 
-    public static boolean place(BlockPos pos, Block block) {
+    public static void place(BlockPos pos, Block block) {
 
         // If block is occupied, digs
         Material pos_material = mc.world.getBlockState(current_place_pos).getMaterial();
         if ((pos_material != Material.AIR && pos_material != Material.WATER && pos_material != Material.LAVA)) {
 
             Blueprint.blueprint_digging.put(current_place_pos, Block.getBlockById(0));
+            return;
 
         }
 
         // The placing
-        if (Inventory.set_hot_bar_0(Item.getIdFromItem(Item.getItemFromBlock(block)))) {
 
-            placing_stuck_ticks = 0;
-            Object[] block_and_face = get_face(pos);
-            if (Objects.isNull(block_and_face)) {
-                return false;
-            }
+        if (mc.player.inventory.getCurrentItem().getItem() != Item.getItemFromBlock(block)) {
 
-            NetHandlerPlayClient connection = mc.getConnection();
-            connection.sendPacket(new CPacketPlayerTryUseItemOnBlock((BlockPos) block_and_face[0], (EnumFacing) block_and_face[1], EnumHand.MAIN_HAND, 0, 0, 0));
-            mc.player.swingArm(EnumHand.MAIN_HAND);
-
-            return true;
-
-        } else {
-
-            return false;
+            Inventory.set_hot_bar_0(Item.getIdFromItem(Item.getItemFromBlock(block)));
+            return;
 
         }
+
+        placing_stuck_ticks = 0;
+        Object[] block_and_face = get_face(pos);
+        if (Objects.isNull(block_and_face)) {
+            return;
+        }
+
+        NetHandlerPlayClient connection = mc.getConnection();
+        connection.sendPacket(new CPacketPlayerTryUseItemOnBlock((BlockPos) block_and_face[0], (EnumFacing) block_and_face[1], EnumHand.MAIN_HAND, 0, 0, 0));
+        mc.player.swingArm(EnumHand.MAIN_HAND);
 
     }
 

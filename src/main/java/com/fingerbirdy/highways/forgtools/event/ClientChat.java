@@ -2,11 +2,11 @@
 This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord if you would like to use any code that is within this class.
  */
 
-package com.fingerbirdy.highways.forgtools.Event;
+package com.fingerbirdy.highways.forgtools.event;
 
 import static com.fingerbirdy.highways.forgtools.Config.config;
 
-import com.fingerbirdy.highways.forgtools.Command.*;
+import com.fingerbirdy.highways.forgtools.command.*;
 import com.fingerbirdy.highways.forgtools.Config;
 import com.fingerbirdy.highways.forgtools.ForgTools;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -22,7 +22,7 @@ public class ClientChat {
         String message = event.getMessage();
 
         // Parse ForgTools commands
-        if (message.charAt(0) == Config.config.get("prefix").toString().charAt(0)) {
+        if (message.charAt(0) == Config.config.get("prefix").charAt(0)) {
 
             event.setCanceled(true);
             ForgTools.sendClientChat(message, true);

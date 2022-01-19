@@ -1,10 +1,9 @@
-package com.fingerbirdy.highways.forgtools.Action;
+package com.fingerbirdy.highways.forgtools.action;
 
 import com.fingerbirdy.highways.forgtools.Blueprint;
 import com.fingerbirdy.highways.forgtools.Config;
 import com.fingerbirdy.highways.forgtools.Enum;
-import com.fingerbirdy.highways.forgtools.Event.ClientTick;
-import com.fingerbirdy.highways.forgtools.ForgTools;
+import com.fingerbirdy.highways.forgtools.event.ClientTick;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,7 +14,7 @@ public class Process {
 
     // Pickaxe, Ender Chest, Obsidian...
 
-    public static Enum.process_status status = Enum.process_status.GETOBSIDIAN;
+    public static Enum.process_status status = Enum.process_status.GET_OBSIDIAN;
 
     public static void tick() {
 
@@ -38,7 +37,7 @@ public class Process {
 
         } else if (obsidian_in_inventory < Integer.parseInt(Config.config.get("obsidian_refill_threshold"))) {
 
-            status = Enum.process_status.GETOBSIDIAN;
+            status = Enum.process_status.GET_OBSIDIAN;
             Blueprint.blueprint.clear();
             Blueprint.retry_blueprint.clear();
             Blueprint.blueprint_digging.clear();
@@ -52,12 +51,12 @@ public class Process {
         // Generate Blueprints
         if (status == Enum.process_status.BUILD && Math.floor(mc.player.lastTickPosX) != Math.floor(mc.player.posX) || Math.floor(mc.player.lastTickPosY) != Math.floor(mc.player.posY) || Math.floor(mc.player.lastTickPosZ) != Math.floor(mc.player.posZ)) {
             Blueprint.generate_build();
-        } else if (status == Enum.process_status.GETOBSIDIAN) {
+        } else if (status == Enum.process_status.GET_OBSIDIAN) {
             Blueprint.generate_get_obsidian();
         }
 
         // Do the action
-        if (status == Enum.process_status.GETOBSIDIAN || status == Enum.process_status.BUILD) {
+        if (status == Enum.process_status.GET_OBSIDIAN || status == Enum.process_status.BUILD) {
 
             if (!Blueprint.blueprint_digging.isEmpty()) {
                 Dig.tick();

@@ -23,7 +23,7 @@ public class Enum {
     }
 
     public enum process_status {
-        GETOBSIDIAN,
+        GET_OBSIDIAN,
         BUILD,
         CONTINUE,
     }

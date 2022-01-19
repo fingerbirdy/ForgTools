@@ -1,14 +1,12 @@
-package com.fingerbirdy.highways.forgtools.Event;
+package com.fingerbirdy.highways.forgtools.event;
 
-import com.fingerbirdy.highways.forgtools.ForgTools;
-import com.fingerbirdy.highways.forgtools.Util.ServerTps;
+import com.fingerbirdy.highways.forgtools.util.ServerTps;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.SPacketTimeUpdate;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
@@ -36,10 +34,9 @@ public class ClientConnectedToServer extends SimpleChannelInboundHandler<Packet>
 
     // Intercepts vanilla packets
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Packet msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Packet msg) {
 
         ServerPacket.onServerPacket(ctx, msg);
-        ctx.fireChannelRead(msg);
 
     }
 

@@ -4,22 +4,18 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
 
 package com.fingerbirdy.highways.forgtools;
 
-import com.fingerbirdy.highways.forgtools.Command.Start;
+import com.fingerbirdy.highways.forgtools.command.Start;
 import net.minecraft.block.Block;
 
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Config {
 
-    public static HashMap<String, String> config = new HashMap<>();
+    public static final HashMap<String, String> config = new HashMap<>();
 
-    public static boolean init() {
+    public static void init() {
 
         // MISC
         config.put("prefix", "?"); // Char
@@ -29,7 +25,7 @@ public class Config {
         config.put("width", "7"); // int
         config.put("height", "4"); // int
         config.put("railings", "true"); // boolean
-        config.put("direction", "PP"); // Enum.direction
+        config.put("direction", "PX"); // Enum.direction
         config.put("material", "obsidian"); // Block.getBlockFromName(String)
         // BEHAVIOUR
         config.put("allow_axis_offset", "true"); // boolean
@@ -41,7 +37,7 @@ public class Config {
 
         try {
 
-            List<String> lines = Files.readAllLines(Paths.get(ForgTools.mc.gameDir + "\\ForgTools\\config\\config.txt"), StandardCharsets.UTF_8);
+            List<String> lines = FileSystem.readLines("CONFIG");
 
             for (String line : lines) {
 
@@ -109,37 +105,17 @@ public class Config {
 
         save();
 
-        return true;
-
     }
 
-    public static boolean save() {
+    public static void save() {
 
-        PrintWriter config_file_out = null;
-        boolean config_save_success = false;
+        StringBuilder config_file_out_value = new StringBuilder();
 
-        try {
-
-            config_file_out = new PrintWriter(ForgTools.mc.gameDir + "\\ForgTools\\config\\config.txt");
-            String config_file_out_value = "";
-
-            for (Map.Entry<String, String> entry : config.entrySet()) {
-                config_file_out_value += entry.getKey() + "=" + entry.getValue() + "\n";
-            }
-
-            config_file_out.write(config_file_out_value);
-
-            config_save_success = true;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (config_file_out != null) {
-                config_file_out.close();
-            }
+        for (Map.Entry<String, String> entry : config.entrySet()) {
+            config_file_out_value.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
         }
 
-        return config_save_success;
+        FileSystem.save("CONFIG", config_file_out_value.toString());
 
     }
 
