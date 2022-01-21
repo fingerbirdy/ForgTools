@@ -1,8 +1,10 @@
 package com.fingerbirdy.highways.forgtools.command;
 
 import com.fingerbirdy.highways.forgtools.Config;
+import com.fingerbirdy.highways.forgtools.Enum;
 import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.fingerbirdy.highways.forgtools.Session;
+import com.fingerbirdy.highways.forgtools.action.Process;
 
 import java.util.ArrayList;
 
@@ -13,6 +15,8 @@ public class Start {
     public static void execute(String[] args) {
 
         try {
+
+            Process.status = Enum.process_status.GET_OBSIDIAN;
 
             ForgTools.sendClientChat("Starting...", true);
             for (String warning : start_warnings) {

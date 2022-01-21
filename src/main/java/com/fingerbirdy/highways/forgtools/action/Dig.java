@@ -4,6 +4,7 @@ import com.fingerbirdy.highways.forgtools.Blueprint;
 import com.fingerbirdy.highways.forgtools.event.ClientTick;
 import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.fingerbirdy.highways.forgtools.util.ServerTps;
+import net.minecraft.block.Block;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
@@ -24,6 +25,12 @@ public class Dig {
 
             BlockPos key = Blueprint.blueprint_digging.keySet().stream().findFirst().get();
             NetHandlerPlayClient connection = mc.player.connection;
+
+            // Removes unbreakable blocks
+            if (mc.world.getBlockState(key).getBlock() == Block.getBlockById(7)) {
+                Blueprint.blueprint_digging.remove(key);
+                return;
+            }
 
             // Start digging a new block
             if (!digging) {
@@ -61,10 +68,9 @@ public class Dig {
 
     }
 
-    // todo: suffer
     private static int calculate_ticks(BlockPos block) {
 
-        return (int) Math.ceil(32 / Math.ceil(mc.player.world.getBlockState(block).getBlockHardness(mc.player.world, block)) * 20 * ServerTps.dynamic_delay_multiplier);
+        return (int) Math.ceil((1 / mc.world.getBlockState(block).getPlayerRelativeBlockHardness(mc.player, mc.player.world, block)) * ServerTps.dynamic_delay_multiplier);
 
     }
 

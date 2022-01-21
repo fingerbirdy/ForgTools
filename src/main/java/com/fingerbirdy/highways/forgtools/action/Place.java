@@ -81,7 +81,12 @@ public class Place {
         Material pos_material = mc.world.getBlockState(current_place_pos).getMaterial();
         if ((pos_material != Material.AIR && pos_material != Material.WATER && pos_material != Material.LAVA)) {
 
-            Blueprint.blueprint_digging.put(current_place_pos, Block.getBlockById(0));
+            if (mc.world.getBlockState(pos).getBlock() != block) {
+
+                Blueprint.blueprint_digging.put(current_place_pos, Block.getBlockById(0));
+
+            }
+
             return;
 
         }

@@ -15,8 +15,11 @@ public class Process {
     // Pickaxe, Ender Chest, Obsidian...
 
     public static Enum.process_status status = Enum.process_status.GET_OBSIDIAN;
+    public static int status_ticks = 0;
 
     public static void tick() {
+
+        status_ticks++;
 
         // Checks delay ticks
         if (ClientTick.ticks % Integer.parseInt(Config.config.get("delay_ticks")) != 0) {
@@ -24,34 +27,45 @@ public class Process {
         }
 
         // Checks if status needs to change
-        int obsidian_in_inventory = 0;
+        int material_in_inventory = 0;
         for (ItemStack slot : mc.player.inventory.mainInventory) {
             if (slot.getItem() == Item.getItemFromBlock(Block.getBlockFromName(Config.config.get("material")))) {
-                obsidian_in_inventory += slot.getCount();
+                material_in_inventory += slot.getCount();
             }
         }
 
-        if (obsidian_in_inventory > Integer.parseInt(Config.config.get("target_obsidian_refill_stacks")) * 64) {
+        if (status == Enum.process_status.GET_OBSIDIAN) {
 
-            status = Enum.process_status.BUILD;
+            if (material_in_inventory > Integer.parseInt(Config.config.get("target_obsidian_refill_stacks")) * 64) {
 
-        } else if (obsidian_in_inventory < Integer.parseInt(Config.config.get("obsidian_refill_threshold"))) {
+                status = Enum.process_status.FINISH_GET_OBSIDIAN;
+                status_ticks = 0;
 
-            status = Enum.process_status.GET_OBSIDIAN;
-            Blueprint.blueprint.clear();
-            Blueprint.retry_blueprint.clear();
-            Blueprint.blueprint_digging.clear();
+            }
 
-        } else if (status == Enum.process_status.BUILD && Blueprint.blueprint.isEmpty() && Blueprint.retry_blueprint.isEmpty() && Blueprint.blueprint_digging.isEmpty()) {
+        } else if (status == Enum.process_status.BUILD) {
 
-            status = Enum.process_status.CONTINUE;
+            if (material_in_inventory < Integer.parseInt(Config.config.get("obsidian_refill_threshold"))) {
+
+                status = Enum.process_status.GET_OBSIDIAN;
+                status_ticks = 0;
+                Blueprint.blueprint.clear();
+                Blueprint.retry_blueprint.clear();
+                Blueprint.blueprint_digging.clear();
+
+            } else if (Blueprint.blueprint.isEmpty() && Blueprint.retry_blueprint.isEmpty() && Blueprint.blueprint_digging.isEmpty()) {
+
+                //status = Enum.process_status.CONTINUE;
+                //status_ticks = 0;
+
+            }
 
         }
 
         // Generate Blueprints
-        if (status == Enum.process_status.BUILD && Math.floor(mc.player.lastTickPosX) != Math.floor(mc.player.posX) || Math.floor(mc.player.lastTickPosY) != Math.floor(mc.player.posY) || Math.floor(mc.player.lastTickPosZ) != Math.floor(mc.player.posZ)) {
+        if (status == Enum.process_status.BUILD) {
             Blueprint.generate_build();
-        } else if (status == Enum.process_status.GET_OBSIDIAN) {
+        } else if (status == Enum.process_status.GET_OBSIDIAN || status == Enum.process_status.FINISH_GET_OBSIDIAN) {
             Blueprint.generate_get_obsidian();
         }
 
