@@ -10,9 +10,10 @@ public class Session {
 
     public static boolean start() {
 
-        // Reset session errors
+        // Reset session
 
         direction = Enum.direction.valueOf(Config.config.get("direction"));
+        buildMode = Enum.build_mode.valueOf(Config.config.get("build_mode"));
         Blueprint.blueprint.clear();
         Blueprint.blueprint_digging.clear();
         Blueprint.retry_blueprint.clear();
@@ -87,6 +88,7 @@ public class Session {
     public static int axis_offset = 0;
     public static int y_position = -1;
     public static Enum.direction direction = Enum.direction.PX;
+    public static Enum.build_mode buildMode = Enum.build_mode.PAVE;
     public static final ArrayList<String> exceptions = new ArrayList<>();
 
 }

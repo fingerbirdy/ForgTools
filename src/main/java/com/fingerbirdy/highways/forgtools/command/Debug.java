@@ -6,12 +6,16 @@ import com.fingerbirdy.highways.forgtools.ForgTools;
 
 public class Debug {
 
+    public static boolean debug = false;
     public static boolean continu = false;
     public static boolean render = false;
 
     public static void execute(String[] args) {
 
-        if (args.length == 1) { ForgTools.sendClientChat("Invalid syntax! Use " + Config.config.get("prefix") + "debug [type]", true);
+        if (args.length == 1) {
+
+            debug = !debug;
+
         }
 
         else if (args[1].equals("continue")) {

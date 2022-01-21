@@ -23,9 +23,10 @@ public class Enum {
     }
 
     public enum process_status {
-        GET_OBSIDIAN,
-        BUILD,
-        CONTINUE,
+        GET_OBSIDIAN, // Needs to get more obsidian
+        FINISH_GET_OBSIDIAN, // Breaking the final ender chest
+        BUILD, // Building/digging
+        CONTINUE, // Moving forward
     }
 
 }
