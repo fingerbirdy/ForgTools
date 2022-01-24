@@ -1,6 +1,6 @@
 package com.fingerbirdy.highways.forgtools.gui;
 
-import com.fingerbirdy.highways.forgtools.FileSystem;
+import com.fingerbirdy.highways.forgtools.util.FileSystem;
 import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -8,7 +8,7 @@ import com.google.gson.JsonParser;
 public class Settings {
 
     // dx, dy: dock left center right, top center bottom
-    private static final String defaults = "{'hud':{'watermark':{'enabled':0,'dx':1,'dy':0,'x':0,'y':3},'debug':{'enabled':0,'dx':0,'dy':0,'x':3,'y':3}}}";
+    private static final String defaults = "{'hud':{'watermark':{'enabled':0,'dx':1,'dy':0,'x':0,'y':3},'debug':{'enabled':0,'dx':0,'dy':0,'x':3,'y':3},'stats':{'enabled':0,'dx':0,'dy':0,'x':3,'y':3}}}";
 
     public static JsonObject gui = new JsonObject();
 

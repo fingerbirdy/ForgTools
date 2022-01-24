@@ -1,6 +1,6 @@
 package com.fingerbirdy.highways.forgtools.command;
 
-import com.fingerbirdy.highways.forgtools.Config;
+import com.fingerbirdy.highways.forgtools.util.Config;
 import com.fingerbirdy.highways.forgtools.gui.Settings;
 
 public class RefreshConfig {

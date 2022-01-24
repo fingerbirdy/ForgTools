@@ -1,4 +1,6 @@
-package com.fingerbirdy.highways.forgtools;
+package com.fingerbirdy.highways.forgtools.util;
+
+import com.fingerbirdy.highways.forgtools.ForgTools;
 
 import java.io.IOException;
 import java.io.PrintWriter;

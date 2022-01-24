@@ -18,6 +18,7 @@ public class ManageRender {
 
         Watermark.render(font_renderer, width, height);
         Debug.render(font_renderer, width, height);
+        Stats.render(font_renderer, width, height);
 
     }
 

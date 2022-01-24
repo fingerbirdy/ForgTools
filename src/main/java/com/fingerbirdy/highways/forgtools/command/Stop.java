@@ -1,7 +1,7 @@
 package com.fingerbirdy.highways.forgtools.command;
 
 import com.fingerbirdy.highways.forgtools.ForgTools;
-import com.fingerbirdy.highways.forgtools.Session;
+import com.fingerbirdy.highways.forgtools.action.Session;
 
 import java.io.File;
 import java.io.FileWriter;

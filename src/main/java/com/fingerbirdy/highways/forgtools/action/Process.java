@@ -1,12 +1,14 @@
 package com.fingerbirdy.highways.forgtools.action;
 
-import com.fingerbirdy.highways.forgtools.Blueprint;
-import com.fingerbirdy.highways.forgtools.Config;
-import com.fingerbirdy.highways.forgtools.Enum;
+import com.fingerbirdy.highways.forgtools.util.Blueprint;
+import com.fingerbirdy.highways.forgtools.util.Config;
+import com.fingerbirdy.highways.forgtools.util.Enum;
+import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.fingerbirdy.highways.forgtools.event.ClientTick;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 
 import static com.fingerbirdy.highways.forgtools.ForgTools.mc;
 
@@ -14,7 +16,7 @@ public class Process {
 
     // Pickaxe, Ender Chest, Obsidian...
 
-    public static Enum.process_status status = Enum.process_status.GET_OBSIDIAN;
+    public static Enum.process_status status = Enum.process_status.BUILD;
     public static int status_ticks = 0;
 
     public static void tick() {
@@ -48,6 +50,7 @@ public class Process {
             if (material_in_inventory < Integer.parseInt(Config.config.get("obsidian_refill_threshold"))) {
 
                 status = Enum.process_status.GET_OBSIDIAN;
+                ForgTools.sendClientChat(String.valueOf(material_in_inventory), true);
                 status_ticks = 0;
                 Blueprint.blueprint.clear();
                 Blueprint.retry_blueprint.clear();
@@ -70,12 +73,37 @@ public class Process {
         }
 
         // Do the action
-        if (status == Enum.process_status.GET_OBSIDIAN || status == Enum.process_status.BUILD) {
+        if (status == Enum.process_status.GET_OBSIDIAN || status == Enum.process_status.FINISH_GET_OBSIDIAN || status == Enum.process_status.BUILD) {
 
-            if (!Blueprint.blueprint_digging.isEmpty()) {
-                Dig.tick();
-            } else if (!Blueprint.blueprint.isEmpty() || !Blueprint.retry_blueprint.isEmpty()) {
-                Place.tick();
+            boolean interaction_valid = true;
+
+            if (interaction_valid && !Blueprint.priority_blueprint.isEmpty()) {
+                Place.tick(Blueprint.blueprints.priority_blueprint, new Object[] {});
+                interaction_valid = false;
+            }
+
+            if (interaction_valid && !Blueprint.blueprint_digging.isEmpty()) {
+                Dig.tick(Blueprint.blueprints.blueprint_digging);
+                interaction_valid = false;
+            }
+
+            if (interaction_valid && !Blueprint.retry_blueprint.isEmpty()) {
+
+                for (BlockPos pos : Blueprint.retry_blueprint.keySet()) {
+                    if (ClientTick.ticks - (int) Blueprint.retry_blueprint.get(pos)[1] >= 20) {
+
+                        Place.tick(Blueprint.blueprints.retry_blueprint, new Object[] {pos});
+                        interaction_valid = false;
+                        break;
+
+                    }
+                }
+
+            }
+
+            if (interaction_valid && !Blueprint.blueprint.isEmpty()) {
+                Place.tick(Blueprint.blueprints.blueprint, new Object[] {});
+                interaction_valid = false;
             }
 
         }
