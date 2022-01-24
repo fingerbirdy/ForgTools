@@ -2,12 +2,13 @@
 This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord if you would like to use any code that is within this class.
 */
 
-package com.fingerbirdy.highways.forgtools;
+package com.fingerbirdy.highways.forgtools.util;
 
+import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.fingerbirdy.highways.forgtools.action.Process;
 
+import com.fingerbirdy.highways.forgtools.action.Session;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
@@ -19,8 +20,19 @@ import static com.fingerbirdy.highways.forgtools.ForgTools.mc;
 public class Blueprint {
 
     public static final LinkedHashMap<BlockPos, Block> blueprint = new LinkedHashMap<>(); // placing
-    public static final LinkedHashMap<BlockPos, Block> blueprint_digging = new LinkedHashMap<>(); // breaking retry
+    public static final LinkedHashMap<BlockPos, Block> blueprint_digging = new LinkedHashMap<>(); // breaking
+    public static final LinkedHashMap<BlockPos, Block> priority_blueprint = new LinkedHashMap<>(); // placing before breaking
     public static final LinkedHashMap<BlockPos, Object[]> retry_blueprint = new LinkedHashMap<>(); // placing, Object[] should consist of Block to_place, int attempted_tick
+
+    public enum blueprints {
+
+        // In order of priority
+        priority_blueprint,
+        blueprint_digging,
+        retry_blueprint,
+        blueprint
+
+    }
 
     // Generate blueprint for tunneling and paving
     public static void generate_build () {

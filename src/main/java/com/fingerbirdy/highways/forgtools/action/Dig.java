@@ -1,10 +1,11 @@
 package com.fingerbirdy.highways.forgtools.action;
 
-import com.fingerbirdy.highways.forgtools.Blueprint;
+import com.fingerbirdy.highways.forgtools.util.Blueprint;
 import com.fingerbirdy.highways.forgtools.event.ClientTick;
 import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.fingerbirdy.highways.forgtools.util.ServerTps;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
@@ -19,7 +20,7 @@ public class Dig {
     public static boolean digging = false;
     public static int ticksNeeded = Integer.MAX_VALUE;
 
-    public static void tick() {
+    public static void tick(Blueprint.blueprints blueprint) {
 
         if (!Blueprint.blueprint_digging.isEmpty()) {
 
@@ -38,8 +39,28 @@ public class Dig {
                 if (Inventory.set_hot_bar_0(278)) {
 
                     digging = true;
-                    ticksNeeded = calculate_ticks(key) + ClientTick.ticks;
-                    connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, key, EnumFacing.UP));
+                    int ticksNeededRaw = calculate_ticks(key);
+                    ticksNeeded = ticksNeededRaw + ClientTick.ticks;
+
+                    if (ticksNeededRaw == -1) {
+
+                        Blueprint.blueprint_digging.remove(key);
+                        return;
+
+                    } else if (ticksNeededRaw == -2) {
+
+                        return;
+
+                    } else if (ticksNeededRaw == -3) {
+
+                        Blueprint.priority_blueprint.put(key, Block.getBlockById(87));
+                        return;
+
+                    } else {
+
+                        connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, key, EnumFacing.UP));
+
+                    }
 
                 } else {
 
@@ -53,6 +74,7 @@ public class Dig {
                 if (ClientTick.ticks >= ticksNeeded) {
 
                     digging = false;
+                    Session.blocks_mined++;
                     ticksNeeded = Integer.MAX_VALUE;
                     Blueprint.blueprint_digging.remove(key);
                     connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, key, EnumFacing.UP));
@@ -69,6 +91,28 @@ public class Dig {
     }
 
     private static int calculate_ticks(BlockPos block) {
+
+        /*
+
+           Returns:
+            0 - Instant break
+            1-inf - Regular break
+            -1 - Air, continue
+            -2 - Liquid, ignore
+            -3 - Source liquid, clog
+
+         */
+
+        Material material = ForgTools.mc.world.getBlockState(block).getMaterial();
+
+        if (material == Material.AIR) {
+            return -1;
+        }
+        if (material.isLiquid()) {
+
+            return -3;
+
+        }
 
         return (int) Math.ceil((1 / mc.world.getBlockState(block).getPlayerRelativeBlockHardness(mc.player, mc.player.world, block)) * ServerTps.dynamic_delay_multiplier);
 

@@ -2,7 +2,7 @@
 This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord if you would like to use any code that is within this class.
  */
 
-package com.fingerbirdy.highways.forgtools;
+package com.fingerbirdy.highways.forgtools.util;
 
 public class Enum {
 

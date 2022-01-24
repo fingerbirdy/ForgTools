@@ -1,7 +1,6 @@
 package com.fingerbirdy.highways.forgtools.action;
 
-import com.fingerbirdy.highways.forgtools.Enum;
-import com.fingerbirdy.highways.forgtools.Session;
+import com.fingerbirdy.highways.forgtools.util.Enum;
 
 import static com.fingerbirdy.highways.forgtools.ForgTools.mc;
 

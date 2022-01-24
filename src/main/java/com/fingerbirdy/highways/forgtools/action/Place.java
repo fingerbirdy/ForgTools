@@ -4,7 +4,8 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
 
 package com.fingerbirdy.highways.forgtools.action;
 
-import com.fingerbirdy.highways.forgtools.Blueprint;
+import com.fingerbirdy.highways.forgtools.ForgTools;
+import com.fingerbirdy.highways.forgtools.util.Blueprint;
 import com.fingerbirdy.highways.forgtools.event.ClientTick;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -25,69 +26,76 @@ public class Place {
     public static Block current_place_block = null;
     public static int placing_stuck_ticks = 0;
 
-    public static void tick() {
+    public static void tick(Blueprint.blueprints blueprint, Object[] args) {
 
-        boolean process_blueprint = true;
+        // Priority blueprint
+        if (blueprint == Blueprint.blueprints.priority_blueprint) {
 
-        // Checks if needs to process the retry blueprint, does if it does
-        if (!Blueprint.retry_blueprint.isEmpty()) {
+            if (!Blueprint.priority_blueprint.isEmpty()) {
 
-            for (BlockPos pos : Blueprint.retry_blueprint.keySet()) {
+                current_place_pos = Blueprint.priority_blueprint.keySet().stream().findFirst().get();
+                current_place_block = Blueprint.priority_blueprint.get(current_place_pos);
 
-                if (ClientTick.ticks - (int) Blueprint.retry_blueprint.get(pos)[1] >= 20) {
-
-                    if (!mc.player.world.getBlockState(pos).getBlock().equals(Blueprint.retry_blueprint.get(pos)[0])) {
-
-                        process_blueprint = false;
-                        current_place_pos = Blueprint.retry_blueprint.keySet().stream().findFirst().get();
-                        current_place_block = (Block) Blueprint.retry_blueprint.get(current_place_pos)[0];
-                        Blueprint.retry_blueprint.remove(pos);
-
-                        place(current_place_pos, current_place_block);
-                        Blueprint.retry_blueprint.put(current_place_pos, new Object[]{current_place_block, ClientTick.ticks});
-
-                    } else {
-
-                        Blueprint.retry_blueprint.remove(pos);
-
-                    }
-
-                    break;
-
+                // Places the block
+                if ( place(current_place_pos, current_place_block) ) {
+                    Blueprint.priority_blueprint.remove(current_place_pos);
                 }
 
             }
 
         }
 
-        // Processes the normal blueprint if it hasn't processed the retry
-        if (process_blueprint && !Blueprint.blueprint.isEmpty()) {
+        // Retry blueprint, expects {BlockPos key} in args
+        if (blueprint == Blueprint.blueprints.retry_blueprint) {
 
-            current_place_pos = Blueprint.blueprint.keySet().stream().findFirst().get();
-            current_place_block = Blueprint.blueprint.get(current_place_pos);
+            current_place_pos = (BlockPos) args[0];
+            current_place_block = (Block) Blueprint.retry_blueprint.get(current_place_pos)[0];
 
-            // Places the block
-            place(current_place_pos, current_place_block);
-            Blueprint.retry_blueprint.put(current_place_pos, new Object[]{current_place_block, ClientTick.ticks});
-            Blueprint.blueprint.remove(current_place_pos);
+            if (!mc.player.world.getBlockState(current_place_pos).getBlock().equals(Blueprint.retry_blueprint.get(current_place_pos)[0])) {
+
+                Blueprint.retry_blueprint.remove(current_place_pos);
+
+                place(current_place_pos, current_place_block);
+                Blueprint.retry_blueprint.put(current_place_pos, new Object[]{current_place_block, ClientTick.ticks});
+
+            } else {
+
+                if (Blueprint.retry_blueprint.get(current_place_pos)[0] == Block.getBlockById(49)) {
+                    Session.obsidian_placed++;
+                }
+                Blueprint.retry_blueprint.remove(current_place_pos);
+
+            }
+
+        }
+
+        // Normal blueprint
+        if (blueprint == Blueprint.blueprints.blueprint) {
+
+            if (!Blueprint.blueprint.isEmpty()) {
+
+                current_place_pos = Blueprint.blueprint.keySet().stream().findFirst().get();
+                current_place_block = Blueprint.blueprint.get(current_place_pos);
+
+                // Places the block
+                place(current_place_pos, current_place_block);
+                Blueprint.retry_blueprint.put(current_place_pos, new Object[]{current_place_block, ClientTick.ticks});
+                Blueprint.blueprint.remove(current_place_pos);
+
+            }
 
         }
 
     }
 
-    public static void place(BlockPos pos, Block block) {
+    public static boolean place(BlockPos pos, Block block) {
 
         // If block is occupied, digs
         Material pos_material = mc.world.getBlockState(current_place_pos).getMaterial();
-        if ((pos_material != Material.AIR && pos_material != Material.WATER && pos_material != Material.LAVA)) {
+        if (!pos_material.isLiquid() && pos_material != Material.AIR) {
 
-            if (mc.world.getBlockState(pos).getBlock() != block) {
-
-                Blueprint.blueprint_digging.put(current_place_pos, Block.getBlockById(0));
-
-            }
-
-            return;
+            Blueprint.blueprint_digging.put(current_place_pos, Block.getBlockById(0));
+            return false;
 
         }
 
@@ -96,19 +104,21 @@ public class Place {
         if (mc.player.inventory.getCurrentItem().getItem() != Item.getItemFromBlock(block)) {
 
             Inventory.set_hot_bar_0(Item.getIdFromItem(Item.getItemFromBlock(block)));
-            return;
+            return false;
 
         }
 
         placing_stuck_ticks = 0;
         Object[] block_and_face = get_face(pos);
         if (Objects.isNull(block_and_face)) {
-            return;
+            return false;
         }
 
         NetHandlerPlayClient connection = mc.getConnection();
         connection.sendPacket(new CPacketPlayerTryUseItemOnBlock((BlockPos) block_and_face[0], (EnumFacing) block_and_face[1], EnumHand.MAIN_HAND, 0, 0, 0));
         mc.player.swingArm(EnumHand.MAIN_HAND);
+
+        return true;
 
     }
 

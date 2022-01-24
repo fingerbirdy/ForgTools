@@ -1,6 +1,9 @@
-package com.fingerbirdy.highways.forgtools;
+package com.fingerbirdy.highways.forgtools.action;
 
-import com.fingerbirdy.highways.forgtools.action.Dig;
+import com.fingerbirdy.highways.forgtools.util.Blueprint;
+import com.fingerbirdy.highways.forgtools.util.Config;
+import com.fingerbirdy.highways.forgtools.util.Enum;
+import com.fingerbirdy.highways.forgtools.ForgTools;
 
 import java.util.ArrayList;
 
@@ -14,10 +17,15 @@ public class Session {
 
         direction = Enum.direction.valueOf(Config.config.get("direction"));
         buildMode = Enum.build_mode.valueOf(Config.config.get("build_mode"));
+        Process.status = Enum.process_status.BUILD;
+        Process.status_ticks = 0;
         Blueprint.blueprint.clear();
         Blueprint.blueprint_digging.clear();
         Blueprint.retry_blueprint.clear();
         Dig.digging = false;
+        obsidian_placed = 0;
+        blocks_mined = 0;
+        start_timestamp = System.nanoTime();
 
         // Check for alignment errors
         String axis_offset_message = "You are off axis! If you would like to start anyways, set allow_axis_offset to false.";
@@ -87,6 +95,9 @@ public class Session {
     public static int axis_onset = 0;
     public static int axis_offset = 0;
     public static int y_position = -1;
+    public static int obsidian_placed = 0;
+    public static int blocks_mined = 0;
+    public static long start_timestamp = 0;
     public static Enum.direction direction = Enum.direction.PX;
     public static Enum.build_mode buildMode = Enum.build_mode.PAVE;
     public static final ArrayList<String> exceptions = new ArrayList<>();

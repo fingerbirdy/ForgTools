@@ -7,7 +7,7 @@ package com.fingerbirdy.highways.forgtools.event;
 import com.fingerbirdy.highways.forgtools.action.Process;
 import com.fingerbirdy.highways.forgtools.command.Debug;
 import com.fingerbirdy.highways.forgtools.ForgTools;
-import com.fingerbirdy.highways.forgtools.Session;
+import com.fingerbirdy.highways.forgtools.action.Session;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;

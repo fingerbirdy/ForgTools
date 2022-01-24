@@ -4,10 +4,10 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
 
 package com.fingerbirdy.highways.forgtools.event;
 
-import static com.fingerbirdy.highways.forgtools.Config.config;
+import static com.fingerbirdy.highways.forgtools.util.Config.config;
 
 import com.fingerbirdy.highways.forgtools.command.*;
-import com.fingerbirdy.highways.forgtools.Config;
+import com.fingerbirdy.highways.forgtools.util.Config;
 import com.fingerbirdy.highways.forgtools.ForgTools;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.fml.common.Mod;

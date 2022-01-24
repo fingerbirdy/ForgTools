@@ -10,15 +10,17 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
  */
 
 /* TODO
-*   In Dig.java::calculate_ticks, do not assume efficiency 5 diamond 1/15/22 (haha good luck)
 *   Improve grind obsidian placements
 *   Inner height being weird
+*   Does not remove obsidian
 */
 
 package com.fingerbirdy.highways.forgtools;
 
 import com.fingerbirdy.highways.forgtools.event.ClientConnectedToServer;
 import com.fingerbirdy.highways.forgtools.gui.Settings;
+import com.fingerbirdy.highways.forgtools.util.Config;
+import com.fingerbirdy.highways.forgtools.util.FileSystem;
 import com.fingerbirdy.highways.forgtools.util.Https;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
