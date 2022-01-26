@@ -53,7 +53,7 @@ public class Dig {
 
                     } else if (ticksNeededRaw == -3) {
 
-                        Blueprint.priority_blueprint.put(key, Block.getBlockById(87));
+                        Blueprint.put_to_blueprint(Blueprint.blueprints.priority_blueprint, key, Block.getBlockById(87));
                         return;
 
                     } else {

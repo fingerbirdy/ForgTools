@@ -9,10 +9,12 @@
 This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord if you would like to use any code that is within this class.
  */
 
-/* TODO
-*   Improve grind obsidian placements
-*   Inner height being weird
-*   Does not remove obsidian
+/* TODO fix
+*   Improve auto obsidian placements
+*   Auto obsidian leaves an ender chest
+*  TODO for release
+*   click gui
+*   baritone implementation
 */
 
 package com.fingerbirdy.highways.forgtools;

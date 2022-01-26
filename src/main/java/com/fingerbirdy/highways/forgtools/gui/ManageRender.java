@@ -14,7 +14,7 @@ public class ManageRender {
         FontRenderer font_renderer = ForgTools.mc.fontRenderer;
 
         int width = new ScaledResolution(ForgTools.mc).getScaledWidth();
-        int height = new ScaledResolution(ForgTools.mc).getScaledWidth();
+        int height = new ScaledResolution(ForgTools.mc).getScaledHeight();
 
         Watermark.render(font_renderer, width, height);
         Debug.render(font_renderer, width, height);
@@ -48,7 +48,7 @@ public class ManageRender {
 
     }
 
-    public static Integer[] getPosition(FontRenderer renderer, String[] json_settings_path,  int width, int height, String text) {
+    public static Integer[] getPosition(FontRenderer renderer, String[] json_settings_path,  int width, int height, String text, int line) {
 
         int dx = 0;
         int dy = 0;
@@ -100,13 +100,13 @@ public class ManageRender {
         switch (dy) {
 
             case 0:
-                position[1] = y;
+                position[1] = y + renderer.FONT_HEIGHT * line;
                 break;
             case 1:
-                position[1] = (height / 2) - (renderer.FONT_HEIGHT) + y;
+                position[1] = (height / 2) - (renderer.FONT_HEIGHT) + y + renderer.FONT_HEIGHT * line;
                 break;
             case 2:
-                position[1] = height - (renderer.FONT_HEIGHT) + y;
+                position[1] = height - (renderer.FONT_HEIGHT) + y - renderer.FONT_HEIGHT * line;
                 break;
 
         }

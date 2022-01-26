@@ -22,8 +22,8 @@ public class Debug {
             int i = 0;
             for (String line : contents) {
 
-                Integer[] position = ManageRender.getPosition(text, new String[]{"hud", "debug"}, width, height, line);
-                text.drawStringWithShadow(line, position[0], position[1] + text.FONT_HEIGHT * i, 0xFFFFFF);
+                Integer[] position = ManageRender.getPosition(text, new String[]{"hud", "debug"}, width, height, line, i);
+                text.drawStringWithShadow(line, position[0], position[1], 0xFFFFFF);
                 i++;
 
             }

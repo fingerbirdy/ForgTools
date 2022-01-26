@@ -18,11 +18,7 @@ public class Stats {
 
         ArrayList<String> contents = new ArrayList<>();
 
-        if (renderValue == -1) {
-
-            renderValue = ManageRender.getRenderValue(jsonPath);
-
-        }
+        renderValue = ManageRender.getRenderValue(jsonPath);
 
         if (renderValue == 1) {
 
@@ -41,8 +37,8 @@ public class Stats {
                 int i = 0;
                 for (String line : contents) {
 
-                    Integer[] position = ManageRender.getPosition(text, jsonPath, width, height, line);
-                    text.drawStringWithShadow(line, position[0], position[1] + text.FONT_HEIGHT * i, 0xededed);
+                    Integer[] position = ManageRender.getPosition(text, jsonPath, width, height, line, i);
+                    text.drawStringWithShadow(line, position[0], position[1], 0xededed);
                     i++;
 
                 }

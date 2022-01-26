@@ -21,8 +21,6 @@ public class Process {
 
     public static void tick() {
 
-        status_ticks++;
-
         // Checks delay ticks
         if (ClientTick.ticks % Integer.parseInt(Config.config.get("delay_ticks")) != 0) {
             return;
@@ -66,9 +64,15 @@ public class Process {
         }
 
         // Generate Blueprints
-        if (status == Enum.process_status.BUILD) {
-            Blueprint.generate_build();
-        } else if (status == Enum.process_status.GET_OBSIDIAN || status == Enum.process_status.FINISH_GET_OBSIDIAN) {
+        if (status_ticks == 0 || (int) mc.player.posX != (int) mc.player.lastTickPosX || (int) mc.player.posY != (int) mc.player.lastTickPosY || (int) mc.player.posZ != (int) mc.player.lastTickPosZ) {
+
+            if (status == Enum.process_status.BUILD) {
+                Blueprint.generate_build();
+            }
+
+        }
+
+        if (status == Enum.process_status.GET_OBSIDIAN || status == Enum.process_status.FINISH_GET_OBSIDIAN) {
             Blueprint.generate_get_obsidian();
         }
 
@@ -117,6 +121,8 @@ public class Process {
             }
 
         }
+
+        status_ticks++;
 
     }
 

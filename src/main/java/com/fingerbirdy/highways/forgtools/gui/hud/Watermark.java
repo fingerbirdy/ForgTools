@@ -13,11 +13,7 @@ public class Watermark {
 
     public static void render(FontRenderer text, int width, int height) {
 
-        if (renderValue == -1) {
-
-            renderValue = ManageRender.getRenderValue(jsonPath);
-
-        }
+        renderValue = ManageRender.getRenderValue(jsonPath);
 
         if (contents == null) {
             if (!ForgTools.latestVersion.equals(ForgTools.VERSION)) {
@@ -29,7 +25,7 @@ public class Watermark {
 
         if (renderValue == 0 || (renderValue == 1 && !ForgTools.latestVersion.equals(ForgTools.VERSION))) {
 
-            Integer[] position = ManageRender.getPosition(text, jsonPath, width, height, contents);
+            Integer[] position = ManageRender.getPosition(text, jsonPath, width, height, contents, 0);
             text.drawStringWithShadow(contents, position[0], position[1], 0xededed);
 
         }
