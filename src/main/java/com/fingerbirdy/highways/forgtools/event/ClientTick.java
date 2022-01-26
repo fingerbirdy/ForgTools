@@ -33,6 +33,7 @@ public class ClientTick {
 
                 e.printStackTrace();
                 StackTraceElement[] stack_trace = e.getStackTrace();
+
                 Session.exceptions.add("\n==================================================");
                 for (StackTraceElement trace_line : stack_trace) {
                     Session.exceptions.add(trace_line.toString());

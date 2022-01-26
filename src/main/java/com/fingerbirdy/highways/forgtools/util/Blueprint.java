@@ -23,6 +23,7 @@ public class Blueprint {
     public static final LinkedHashMap<BlockPos, Block> blueprint_digging = new LinkedHashMap<>(); // breaking
     public static final LinkedHashMap<BlockPos, Block> priority_blueprint = new LinkedHashMap<>(); // placing before breaking
     public static final LinkedHashMap<BlockPos, Object[]> retry_blueprint = new LinkedHashMap<>(); // placing, Object[] should consist of Block to_place, int attempted_tick
+    public static final LinkedHashMap<BlockPos, Block> full_blueprint = new LinkedHashMap<>(); // data for the complete build, never runs, does not include retry_blueprint
 
     public enum blueprints {
 
@@ -30,19 +31,209 @@ public class Blueprint {
         priority_blueprint,
         blueprint_digging,
         retry_blueprint,
-        blueprint
+        blueprint,
+
+        full_blueprint
+
+    }
+
+    public static void put_to_blueprint(blueprints blueprint_type, BlockPos pos, Block block) {
+
+        if (blueprint_type == blueprints.blueprint) {
+            blueprint.put(pos, block);
+            full_blueprint.put(pos, block);
+            return;
+        }
+        if (blueprint_type == blueprints.blueprint_digging) {
+            blueprint_digging.put(pos, block);
+            full_blueprint.put(pos, block);
+            return;
+        }
+        if (blueprint_type == blueprints.priority_blueprint) {
+            priority_blueprint.put(pos, block);
+            full_blueprint.put(pos, block);
+            return;
+        }
+        if (blueprint_type == blueprints.full_blueprint) {
+            full_blueprint.put(pos, block);
+            //return;
+        }
+
+    }
+
+    public static void put_to_blueprint(blueprints blueprint_type, BlockPos pos, Object[] args) {
+
+        if (blueprint_type == blueprints.retry_blueprint) {
+            retry_blueprint.put(pos, args);
+            //return;
+        }
 
     }
 
     // Generate blueprint for tunneling and paving
     public static void generate_build () {
 
-        blueprint.clear();
-
         // Clear space algorithm
         Block material = Block.getBlockFromName(Config.config.get("material"));
         int width = Integer.parseInt(Config.config.get("width"));
         int height = Integer.parseInt(Config.config.get("height"));
+
+        // Paving algorithm
+        if (Session.buildMode == Enum.build_mode.PAVE) {
+
+            // STRAIGHTS PAVING
+            if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.NX || Session.direction == Enum.direction.PZ || Session.direction == Enum.direction.NZ) {
+
+                ArrayList<Integer> onsets = new ArrayList<>();
+                ArrayList<Integer> y_coord = new ArrayList<>();
+                ArrayList<Integer> offsets = new ArrayList<>();
+
+                int axis_progress;
+                if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.NX) {
+                    axis_progress = (int) mc.player.posX;
+                } else {
+                    axis_progress = (int) mc.player.posZ;
+                }
+
+                for (int i = axis_progress; i < axis_progress + 3; i++) {
+
+                    for (int j = 0; j < width; j++) {
+
+                        boolean isCorner = (j == 0 || j == width - 1);
+                        int y_position = Session.y_position;
+                        if (isCorner) { y_position++; }
+                        if (Session.buildMode == Enum.build_mode.PAVE) { y_position--; }
+
+                        if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.PZ) {
+                            onsets.add(i);
+                        } else { onsets.add(i - 3); }
+                        offsets.add(j - (width / 2) + Session.axis_offset);
+
+                        y_coord.add(y_position);
+
+                    }
+
+                }
+
+                if (Session.direction == Enum.direction.NX || Session.direction == Enum.direction.NZ) {
+                    Collections.reverse(onsets);
+                    Collections.reverse(y_coord);
+                    Collections.reverse(offsets);
+                }
+
+                if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.NX) {
+                    for (int i = 0; i < onsets.size(); i++) {
+
+                        BlockPos position = new BlockPos(onsets.get(i), y_coord.get(i), offsets.get(i));
+                        if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                            put_to_blueprint(blueprints.blueprint, position, material);
+                        } else {
+                            put_to_blueprint(blueprints.full_blueprint, position, material);
+                        }
+
+                    }
+                } else {
+                    for (int i = 0; i < onsets.size(); i++) {
+
+                        BlockPos position = new BlockPos(offsets.get(i), y_coord.get(i), onsets.get(i));
+                        if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                            put_to_blueprint(blueprints.blueprint, position, material);
+                        } else {
+                            put_to_blueprint(blueprints.full_blueprint, position, material);
+                        }
+
+                    }
+                }
+
+            }
+
+            // DIAGONALS PAVING
+
+            else {
+
+                int axis_progress = (int) Math.floor(mc.player.posX);
+                ArrayList<BlockPos> positions = new ArrayList<>();
+
+                for (int i = 0; i < 3; i++) {
+
+                    for (int j = (int) Math.ceil(width / -2F); j <= width / 2; j++) {
+
+                        boolean isCorner = (j == (int) Math.ceil(width / -2F) || j > width / 2 - 1);
+
+                        int y_coord;
+                        if (isCorner) {
+                            y_coord = Session.y_position;
+                        } else {
+                            y_coord = Session.y_position - 1;
+                        }
+
+                        if (j < 0) {
+
+                            if (Session.direction == Enum.direction.PP) {
+                                BlockPos position = new BlockPos(axis_progress + j + i, y_coord, axis_progress + Session.axis_offset + i);
+                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                                    positions.add(position);
+                                }
+                            } else if (Session.direction == Enum.direction.MP) {
+                                BlockPos position = new BlockPos(axis_progress - i, y_coord, axis_progress*-1 + j + Session.axis_offset + i);
+                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                                    positions.add(position);
+                                }
+                            } else if (Session.direction == Enum.direction.MM) {
+                                BlockPos position = new BlockPos(axis_progress - j - i, y_coord, axis_progress + Session.axis_offset - i);
+                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                                    positions.add(position);
+                                }
+                            } else if (Session.direction == Enum.direction.PM) {
+                                BlockPos position = new BlockPos(axis_progress + j + i, y_coord, axis_progress*-1 + Session.axis_offset - i);
+                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                                    positions.add(position);
+                                }
+                            }
+
+                        } else {
+
+                            if (Session.direction == Enum.direction.PP) {
+                                BlockPos position = new BlockPos(axis_progress + i, y_coord, axis_progress + Session.axis_offset - j + i);
+                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                                    positions.add(position);
+                                }
+                            } else if (Session.direction == Enum.direction.MP) {
+                                BlockPos position = new BlockPos(axis_progress + j - i, y_coord, axis_progress*-1 + Session.axis_offset + i);
+                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                                    positions.add(position);
+                                }
+                            } else if (Session.direction == Enum.direction.MM) {
+                                BlockPos position = new BlockPos(axis_progress - i, y_coord, axis_progress + j + Session.axis_offset - i);
+                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                                    positions.add(position);
+                                }
+                            } else if (Session.direction == Enum.direction.PM) {
+                                BlockPos position = new BlockPos(axis_progress + i, y_coord, axis_progress*-1 + j + Session.axis_offset - i);
+                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                                    positions.add(position);positions.add(position);
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                for (BlockPos position : positions) {
+
+                    if (!mc.player.world.getBlockState(position).getBlock().equals(material)) {
+                        put_to_blueprint(blueprints.blueprint, position, material);
+                    } else {
+                        put_to_blueprint(blueprints.full_blueprint, position, material);
+                    }
+
+                }
+
+            }
+
+        }
 
         // STRAIGHTS CLEARING
         if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.NX || Session.direction == Enum.direction.PZ || Session.direction == Enum.direction.NZ) {
@@ -93,15 +284,31 @@ public class Blueprint {
             }
 
             if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.NX) {
+
                 for (int i = 0; i < onsets.size(); i++) {
+
                     BlockPos position = new BlockPos(onsets.get(i), y_coord.get(i), offsets.get(i));
-                    if (!mc.player.world.getBlockState(position).getBlock().equals(material) && mc.player.world.getBlockState(position).getBlock() != Block.getBlockById(0)) { blueprint_digging.put(position, Block.getBlockById(0)); }
+                    Block block = mc.player.world.getBlockState(position).getBlock();
+
+                    if (block != Block.getBlockById(0) && (full_blueprint.get(position) == null || full_blueprint.get(position) != Block.getBlockById(0) && block != material)) {
+                        put_to_blueprint(blueprints.blueprint_digging, position, Block.getBlockById(0));
+                    }
+
                 }
+
             } else {
+
                 for (int i = 0; i < onsets.size(); i++) {
+
                     BlockPos position = new BlockPos(offsets.get(i), y_coord.get(i), onsets.get(i));
-                    if (!mc.player.world.getBlockState(position).getBlock().equals(material) && mc.player.world.getBlockState(position).getBlock() != Block.getBlockById(0)) { blueprint_digging.put(position, Block.getBlockById(0)); }
+                    Block block = mc.player.world.getBlockState(position).getBlock();
+
+                    if (block != Block.getBlockById(0) && (full_blueprint.get(position) == null || full_blueprint.get(position) != Block.getBlockById(0) && block != material)) {
+                        put_to_blueprint(blueprints.blueprint_digging, position, Block.getBlockById(0));
+                    }
+
                 }
+
             }
 
         }
@@ -170,123 +377,11 @@ public class Blueprint {
             }
 
             for (BlockPos position : positions) {
-                if (!mc.player.world.getBlockState(position).getBlock().equals(material) && mc.player.world.getBlockState(position).getBlock() != Block.getBlockById(0)) { blueprint_digging.put(position, Block.getBlockById(0)); }
-            }
 
-        }
+                Block block = mc.world.getBlockState(position).getBlock();
 
-        // Paving algorithm
-        if (Session.buildMode == Enum.build_mode.PAVE) {
-
-            // STRAIGHTS PAVING
-            if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.NX || Session.direction == Enum.direction.PZ || Session.direction == Enum.direction.NZ) {
-
-                ArrayList<Integer> onsets = new ArrayList<>();
-                ArrayList<Integer> y_coord = new ArrayList<>();
-                ArrayList<Integer> offsets = new ArrayList<>();
-
-                int axis_progress;
-                if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.NX) {
-                    axis_progress = (int) mc.player.posX;
-                } else {
-                    axis_progress = (int) mc.player.posZ;
-                }
-
-                for (int i = axis_progress; i < axis_progress + 3; i++) {
-
-                    for (int j = 0; j < width; j++) {
-
-                        boolean isCorner = (j == 0 || j == width - 1);
-                        int y_position = Session.y_position;
-                        if (isCorner) { y_position++; }
-                        if (Session.buildMode == Enum.build_mode.PAVE) { y_position--; }
-
-                        if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.PZ) {
-                            onsets.add(i);
-                        } else { onsets.add(i - 3); }
-                        offsets.add(j - (width / 2) + Session.axis_offset);
-
-                        y_coord.add(y_position);
-
-                    }
-
-                }
-
-                if (Session.direction == Enum.direction.NX || Session.direction == Enum.direction.NZ) {
-                    Collections.reverse(onsets);
-                    Collections.reverse(y_coord);
-                    Collections.reverse(offsets);
-                }
-
-                if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.NX) {
-                    for (int i = 0; i < onsets.size(); i++) {
-                        BlockPos position = new BlockPos(onsets.get(i), y_coord.get(i), offsets.get(i));
-                        if (!mc.player.world.getBlockState(position).getBlock().equals(material)) { blueprint.put(position, material); }
-                    }
-                } else {
-                    for (int i = 0; i < onsets.size(); i++) {
-                        BlockPos position = new BlockPos(offsets.get(i), y_coord.get(i), onsets.get(i));
-                        if (!mc.player.world.getBlockState(position).getBlock().equals(material)) { blueprint.put(position, material); }
-                    }
-                }
-
-            }
-
-            // DIAGONALS PAVING
-
-            else {
-
-                int axis_progress = (int) Math.floor(mc.player.posX);
-
-                for (int i = 0; i < 3; i++) {
-
-                    for (int j = (int) Math.ceil(width / -2F); j <= width / 2; j++) {
-
-                        boolean isCorner = (j == (int) Math.ceil(width / -2F) || j > width / 2 - 1);
-
-                        int y_coord;
-                        if (isCorner) {
-                            y_coord = Session.y_position;
-                        } else {
-                            y_coord = Session.y_position - 1;
-                        }
-
-                        if (j < 0) {
-
-                            if (Session.direction == Enum.direction.PP) {
-                                BlockPos position = new BlockPos(axis_progress + j + i, y_coord, axis_progress + Session.axis_offset + i);
-                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) { blueprint.put(position, material); }
-                            } else if (Session.direction == Enum.direction.MP) {
-                                BlockPos position = new BlockPos(axis_progress - i, y_coord, axis_progress*-1 + j + Session.axis_offset + i);
-                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) { blueprint.put(position, material); }
-                            } else if (Session.direction == Enum.direction.MM) {
-                                BlockPos position = new BlockPos(axis_progress - j - i, y_coord, axis_progress + Session.axis_offset - i);
-                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) { blueprint.put(position, material); }
-                            } else if (Session.direction == Enum.direction.PM) {
-                                BlockPos position = new BlockPos(axis_progress + j + i, y_coord, axis_progress*-1 + Session.axis_offset - i);
-                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) { blueprint.put(position, material); }
-                            }
-
-                        } else {
-
-                            if (Session.direction == Enum.direction.PP) {
-                                BlockPos position = new BlockPos(axis_progress + i, y_coord, axis_progress + Session.axis_offset - j + i);
-                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) { blueprint.put(position, material); }
-                            } else if (Session.direction == Enum.direction.MP) {
-                                BlockPos position = new BlockPos(axis_progress + j - i, y_coord, axis_progress*-1 + Session.axis_offset + i);
-                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) { blueprint.put(position, material); }
-                            } else if (Session.direction == Enum.direction.MM) {
-                                BlockPos position = new BlockPos(axis_progress - i, y_coord, axis_progress + j + Session.axis_offset - i);
-                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) { blueprint.put(position, material); }
-                            } else if (Session.direction == Enum.direction.PM) {
-                                BlockPos position = new BlockPos(axis_progress + i, y_coord, axis_progress*-1 + j + Session.axis_offset - i);
-                                if (!mc.player.world.getBlockState(position).getBlock().equals(material)) { blueprint.put(position, material); }
-                            }
-
-                        }
-
-                    }
-
+                if (block != Block.getBlockById(0) && (full_blueprint.get(position) == null || full_blueprint.get(position) != Block.getBlockById(0) && block != material)) {
+                    put_to_blueprint(blueprints.blueprint_digging, position, Block.getBlockById(0));
                 }
 
             }
@@ -305,7 +400,7 @@ public class Blueprint {
 
             if (mc.world.getBlockState(pos).getBlock() == Block.getBlockById(130)) {
 
-                blueprint_digging.put(pos, Block.getBlockById(0));
+                put_to_blueprint(blueprints.blueprint_digging, pos, Block.getBlockById(0));
                 return;
 
             }
@@ -323,14 +418,18 @@ public class Blueprint {
         // Place an ender chest
         for (BlockPos pos : check_poss) {
 
-            if (mc.world.getBlockState(pos.down()).isFullCube() && Math.abs(mc.player.posX - pos.getX() + 0.5) > 1 && Math.abs(mc.player.posZ - pos.getZ() + 0.5) > 1) {
-                blueprint.put(pos, Block.getBlockById(130));
+            if (retry_blueprint.containsKey(pos) && retry_blueprint.get(pos)[0] == Block.getBlockById(130)) {
                 return;
             }
 
-        }
+            if (mc.world.getBlockState(pos.down()).isFullCube() && Math.abs(mc.player.posX - pos.getX() + 0.5) > 1 && Math.abs(mc.player.posZ - pos.getZ() + 0.5) > 1) {
 
-        ForgTools.sendClientChat("Could not find empty adjacent block", true);
+                put_to_blueprint(blueprints.blueprint, pos, Block.getBlockById(130));
+                return;
+
+            }
+
+        }
 
     }
 

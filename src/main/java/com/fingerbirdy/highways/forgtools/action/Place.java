@@ -56,7 +56,7 @@ public class Place {
                 Blueprint.retry_blueprint.remove(current_place_pos);
 
                 place(current_place_pos, current_place_block);
-                Blueprint.retry_blueprint.put(current_place_pos, new Object[]{current_place_block, ClientTick.ticks});
+                Blueprint.put_to_blueprint(Blueprint.blueprints.retry_blueprint, current_place_pos, new Object[]{current_place_block, ClientTick.ticks});
 
             } else {
 
@@ -79,7 +79,7 @@ public class Place {
 
                 // Places the block
                 place(current_place_pos, current_place_block);
-                Blueprint.retry_blueprint.put(current_place_pos, new Object[]{current_place_block, ClientTick.ticks});
+                Blueprint.put_to_blueprint(Blueprint.blueprints.retry_blueprint, current_place_pos, new Object[]{current_place_block, ClientTick.ticks});
                 Blueprint.blueprint.remove(current_place_pos);
 
             }
@@ -94,7 +94,7 @@ public class Place {
         Material pos_material = mc.world.getBlockState(current_place_pos).getMaterial();
         if (!pos_material.isLiquid() && pos_material != Material.AIR) {
 
-            Blueprint.blueprint_digging.put(current_place_pos, Block.getBlockById(0));
+            Blueprint.put_to_blueprint(Blueprint.blueprints.blueprint_digging, current_place_pos, Block.getBlockById(0));
             return false;
 
         }
