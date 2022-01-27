@@ -59,6 +59,7 @@ public class Dig {
                     } else {
 
                         connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, key, EnumFacing.UP));
+                        Session.current_action = "Dig " + key;
 
                     }
 
@@ -71,6 +72,7 @@ public class Dig {
             } else {
 
                 // stop digging the current block if needed
+                //if (mc.world.getBlockState(key).getBlock() == Block.getBlockById(0)) {
                 if (ClientTick.ticks >= ticksNeeded) {
 
                     digging = false;
