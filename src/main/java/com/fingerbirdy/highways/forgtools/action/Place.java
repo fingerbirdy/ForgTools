@@ -117,6 +117,7 @@ public class Place {
         NetHandlerPlayClient connection = mc.getConnection();
         connection.sendPacket(new CPacketPlayerTryUseItemOnBlock((BlockPos) block_and_face[0], (EnumFacing) block_and_face[1], EnumHand.MAIN_HAND, 0, 0, 0));
         mc.player.swingArm(EnumHand.MAIN_HAND);
+        Session.current_action = "Place " + current_place_pos;
 
         return true;
 

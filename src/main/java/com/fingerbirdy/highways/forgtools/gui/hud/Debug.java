@@ -1,6 +1,7 @@
 package com.fingerbirdy.highways.forgtools.gui.hud;
 
 import com.fingerbirdy.highways.forgtools.action.Process;
+import com.fingerbirdy.highways.forgtools.action.Session;
 import com.fingerbirdy.highways.forgtools.event.ClientTick;
 import com.fingerbirdy.highways.forgtools.gui.ManageRender;
 import net.minecraft.client.gui.FontRenderer;
@@ -15,7 +16,7 @@ public class Debug {
 
                     "Tick: " + ClientTick.ticks,
                     "Process status: " + Process.status.name(),
-                    "Inner height: " + height
+                    "Current interaction: " + Session.current_action
 
             };
 

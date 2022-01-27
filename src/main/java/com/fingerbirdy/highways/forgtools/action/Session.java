@@ -139,6 +139,7 @@ public class Session {
     public static int obsidian_placed = 0;
     public static int blocks_mined = 0;
     public static long start_timestamp = 0;
+    public static String current_action = "None";
     public static Enum.direction direction = Enum.direction.PX;
     public static Enum.build_mode buildMode = Enum.build_mode.PAVE;
     public static final ArrayList<String> exceptions = new ArrayList<>();
