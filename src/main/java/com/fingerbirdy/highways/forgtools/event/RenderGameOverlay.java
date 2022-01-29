@@ -11,10 +11,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class RenderGameOverlay {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void renderGameOverlayEvent(RenderGameOverlayEvent.Post event) {
+    public static void renderGameOverlayEventText(RenderGameOverlayEvent.Text event) {
 
         ForgTools.mc.entityRenderer.setupOverlayRendering();
-        ManageRender.render();
+        ManageRender.renderText();
 
     }
 

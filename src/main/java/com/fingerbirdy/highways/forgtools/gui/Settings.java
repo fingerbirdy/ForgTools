@@ -8,7 +8,8 @@ import com.google.gson.JsonParser;
 public class Settings {
 
     // dx, dy: dock left center right, top center bottom
-    private static final String defaults = "{'hud':{'watermark':{'enabled':0,'dx':1,'dy':0,'x':0,'y':3},'debug':{'enabled':0,'dx':0,'dy':0,'x':3,'y':3},'stats':{'enabled':0,'dx':0,'dy':0,'x':3,'y':3}}}";
+    private static final String defaults = "{'hud':{'watermark':{'enabled':1,'dx':1,'dy':0,'x':0,'y':3},'debug':{'enabled':0,'dx':0,'dy':2,'x':3,'y':-3},'stats':{'enabled':0,'dx':0,'dy':0,'x':3,'y':3}},"
+            + "'clickgui':{'forgtools':{'dx':0,'dy':0,'x':10,'y':10},'build':{'dx':0,'dy':0,'x':120,'y':10},'behaviour':{'dx':0,'dy':0,'x':230,'y':10}}}";
 
     public static JsonObject gui = new JsonObject();
 

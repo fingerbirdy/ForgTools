@@ -14,7 +14,7 @@ public class Stats {
 
     public static int renderValue = -1;
 
-    public static void render(FontRenderer text, int width, int height) {
+    public static void renderText(FontRenderer text, int width, int height) {
 
         ArrayList<String> contents = new ArrayList<>();
 

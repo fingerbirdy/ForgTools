@@ -11,7 +11,7 @@ public class Watermark {
     public static String contents = null;
     public static int renderValue = -1;
 
-    public static void render(FontRenderer text, int width, int height) {
+    public static void renderText(FontRenderer text, int width, int height) {
 
         renderValue = ManageRender.getRenderValue(jsonPath);
 
