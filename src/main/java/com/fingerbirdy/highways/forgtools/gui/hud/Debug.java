@@ -8,7 +8,7 @@ import net.minecraft.client.gui.FontRenderer;
 
 public class Debug {
 
-    public static void render(FontRenderer text, int width, int height) {
+    public static void renderText(FontRenderer text, int width, int height) {
 
         if (com.fingerbirdy.highways.forgtools.command.Debug.debug) {
 

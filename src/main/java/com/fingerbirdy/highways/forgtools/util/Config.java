@@ -19,7 +19,6 @@ public class Config {
 
         // MISC
         config.put("prefix", "?"); // Char
-        config.put("allowed_logging_severity", "0"); // int
         // BUILD
         config.put("build_mode", "PAVE"); // Enum.build_mode
         config.put("width", "7"); // int

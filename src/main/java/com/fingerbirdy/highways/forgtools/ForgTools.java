@@ -10,8 +10,7 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
  */
 
 /* TODO fix
-*   Improve auto obsidian placements
-*   Auto obsidian leaves an ender chest
+*   auto obsidian
 *  TODO for release
 *   click gui
 *   baritone implementation

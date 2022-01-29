@@ -36,10 +36,6 @@ public class Debug {
 
     public static void tick() {
 
-        if (continu) {
-            Continue.tick();
-        }
-
     }
 
 }
