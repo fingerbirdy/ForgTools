@@ -20,7 +20,7 @@ public class Config {
         // MISC
         config.put("prefix", "?"); // Char
         // BUILD
-        config.put("build_mode", "PAVE"); // Enum.build_mode
+        config.put("build_mode", "PAVE"); // Enum.buildMode
         config.put("width", "7"); // int
         config.put("height", "4"); // int
         config.put("railings", "true"); // boolean
@@ -71,7 +71,7 @@ public class Config {
                     }
                     // Enum.build_mode
                     if (line_key.equals("build_mode")) {
-                        config.put(line_key, Enum.build_mode.valueOf(line_value).name());
+                        config.put(line_key, Enum.buildMode.valueOf(line_value).name());
                         continue;
                     }
                     // Enum.direction

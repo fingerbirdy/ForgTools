@@ -16,7 +16,7 @@ public class Process {
 
     // Pickaxe, Ender Chest, Obsidian...
 
-    public static Enum.process_status status = Enum.process_status.BUILD;
+    public static Enum.processStatus status = Enum.processStatus.BUILD;
     public static int status_ticks = 0;
 
     public static void tick() {
@@ -34,20 +34,20 @@ public class Process {
             }
         }
 
-        if (status == Enum.process_status.GET_OBSIDIAN) {
+        if (status == Enum.processStatus.GET_OBSIDIAN) {
 
             if (material_in_inventory > Integer.parseInt(Config.config.get("target_obsidian_refill_stacks")) * 64) {
 
-                status = Enum.process_status.FINISH_GET_OBSIDIAN;
+                status = Enum.processStatus.FINISH_GET_OBSIDIAN;
                 status_ticks = 0;
 
             }
 
-        } else if (status == Enum.process_status.BUILD) {
+        } else if (status == Enum.processStatus.BUILD) {
 
             if (material_in_inventory < Integer.parseInt(Config.config.get("obsidian_refill_threshold"))) {
 
-                status = Enum.process_status.GET_OBSIDIAN;
+                status = Enum.processStatus.GET_OBSIDIAN;
                 ForgTools.sendClientChat(String.valueOf(material_in_inventory), true);
                 status_ticks = 0;
                 Blueprint.blueprint.clear();
@@ -66,18 +66,18 @@ public class Process {
         // Generate Blueprints
         if (status_ticks == 0 || (int) mc.player.posX != (int) mc.player.lastTickPosX || (int) mc.player.posY != (int) mc.player.lastTickPosY || (int) mc.player.posZ != (int) mc.player.lastTickPosZ) {
 
-            if (status == Enum.process_status.BUILD) {
+            if (status == Enum.processStatus.BUILD) {
                 Blueprint.generate_build();
             }
 
         }
 
-        if (status == Enum.process_status.GET_OBSIDIAN || status == Enum.process_status.FINISH_GET_OBSIDIAN) {
+        if (status == Enum.processStatus.GET_OBSIDIAN || status == Enum.processStatus.FINISH_GET_OBSIDIAN) {
             Blueprint.generate_get_obsidian();
         }
 
         // Do the action
-        if (status == Enum.process_status.GET_OBSIDIAN || status == Enum.process_status.FINISH_GET_OBSIDIAN || status == Enum.process_status.BUILD) {
+        if (status == Enum.processStatus.GET_OBSIDIAN || status == Enum.processStatus.FINISH_GET_OBSIDIAN || status == Enum.processStatus.BUILD) {
 
             boolean interaction_valid = true;
 
@@ -112,12 +112,12 @@ public class Process {
 
         }
 
-        else if (status == Enum.process_status.CONTINUE) {
+        else if (status == Enum.processStatus.CONTINUE) {
 
             if (Continue.going) {
                 Continue.tick();
             } else {
-                status = Enum.process_status.BUILD;
+                status = Enum.processStatus.BUILD;
             }
 
         }

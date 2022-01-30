@@ -4,7 +4,6 @@ import com.fingerbirdy.highways.forgtools.util.Blueprint;
 import com.fingerbirdy.highways.forgtools.util.Config;
 import com.fingerbirdy.highways.forgtools.util.Enum;
 import com.fingerbirdy.highways.forgtools.ForgTools;
-import com.fingerbirdy.highways.forgtools.util.FileSystem;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -22,8 +21,8 @@ public class Session {
         // Reset session
 
         direction = Enum.direction.valueOf(Config.config.get("direction"));
-        buildMode = Enum.build_mode.valueOf(Config.config.get("build_mode"));
-        Process.status = Enum.process_status.BUILD;
+        buildMode = Enum.buildMode.valueOf(Config.config.get("build_mode"));
+        Process.status = Enum.processStatus.BUILD;
         Process.status_ticks = 0;
         Blueprint.full_blueprint.clear();
         Blueprint.blueprint.clear();
@@ -68,10 +67,10 @@ public class Session {
         // Check for y position errors
         if (!Boolean.parseBoolean(Config.config.get("allow_incorrect_y_pos"))) {
 
-            if (Enum.build_mode.valueOf(Config.config.get("build_mode")) == Enum.build_mode.PAVE && (int) mc.player.posY != 120) {
+            if (Enum.buildMode.valueOf(Config.config.get("build_mode")) == Enum.buildMode.PAVE && (int) mc.player.posY != 120) {
                 ForgTools.sendClientChat(incorrect_y_pos_message, true);
                 return false;
-            } else if (Enum.build_mode.valueOf(Config.config.get("build_mode")) == Enum.build_mode.TUNNEL && (int) mc.player.posY != 119) {
+            } else if (Enum.buildMode.valueOf(Config.config.get("build_mode")) == Enum.buildMode.TUNNEL && (int) mc.player.posY != 119) {
                 ForgTools.sendClientChat(incorrect_y_pos_message, true);
                 return false;
             }
@@ -141,7 +140,7 @@ public class Session {
     public static long start_timestamp = 0;
     public static String current_action = "None";
     public static Enum.direction direction = Enum.direction.PX;
-    public static Enum.build_mode buildMode = Enum.build_mode.PAVE;
+    public static Enum.buildMode buildMode = Enum.buildMode.PAVE;
     public static final ArrayList<String> exceptions = new ArrayList<>();
 
 }

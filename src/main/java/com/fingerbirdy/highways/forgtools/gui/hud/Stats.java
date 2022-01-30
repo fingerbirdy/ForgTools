@@ -28,9 +28,9 @@ public class Stats {
 
                 contents.add("This session: " + (int) Math.floor(run_time / 3600F) + "h " + (int) Math.floor(run_time / 60F) % 60 + "m " + (int) Math.floor(run_time) % 60 + "s");
 
-                if (Session.buildMode == Enum.build_mode.PAVE) {
+                if (Session.buildMode == Enum.buildMode.PAVE) {
                     contents.add("Obsidian placed: " + Session.obsidian_placed);
-                } else if (Session.buildMode == Enum.build_mode.TUNNEL) {
+                } else if (Session.buildMode == Enum.buildMode.TUNNEL) {
                     contents.add("Netherrack mined: " + Session.blocks_mined);
                 }
 

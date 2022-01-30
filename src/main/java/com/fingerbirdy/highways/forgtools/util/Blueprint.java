@@ -4,7 +4,6 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
 
 package com.fingerbirdy.highways.forgtools.util;
 
-import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.fingerbirdy.highways.forgtools.action.Process;
 
 import com.fingerbirdy.highways.forgtools.action.Session;
@@ -79,7 +78,7 @@ public class Blueprint {
         int height = Integer.parseInt(Config.config.get("height"));
 
         // Paving algorithm
-        if (Session.buildMode == Enum.build_mode.PAVE) {
+        if (Session.buildMode == Enum.buildMode.PAVE) {
 
             // STRAIGHTS PAVING
             if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.NX || Session.direction == Enum.direction.PZ || Session.direction == Enum.direction.NZ) {
@@ -102,7 +101,7 @@ public class Blueprint {
                         boolean isCorner = (j == 0 || j == width - 1);
                         int y_position = Session.y_position;
                         if (isCorner) { y_position++; }
-                        if (Session.buildMode == Enum.build_mode.PAVE) { y_position--; }
+                        if (Session.buildMode == Enum.buildMode.PAVE) { y_position--; }
 
                         if (Session.direction == Enum.direction.PX || Session.direction == Enum.direction.PZ) {
                             onsets.add(i);
@@ -257,7 +256,7 @@ public class Blueprint {
                     int yCoord = Session.y_position;
                     int yLimit = Session.y_position + height;
                     if (isCorner) { yCoord++; }
-                    if (Session.buildMode == Enum.build_mode.PAVE) { yCoord--; yLimit--; }
+                    if (Session.buildMode == Enum.buildMode.PAVE) { yCoord--; yLimit--; }
 
                     while (yCoord < yLimit) {
 
@@ -328,7 +327,7 @@ public class Blueprint {
                     int y_coord = Session.y_position;
                     int yLimit = Session.y_position + height;
                     if (isCorner) { y_coord++; }
-                    if (Session.buildMode == Enum.build_mode.PAVE) { y_coord--; yLimit--; }
+                    if (Session.buildMode == Enum.buildMode.PAVE) { y_coord--; yLimit--; }
 
                     while (y_coord < yLimit) {
 
@@ -409,9 +408,9 @@ public class Blueprint {
 
             }
 
-            if (Process.status == Enum.process_status.FINISH_GET_OBSIDIAN && Process.status_ticks >= 20) {
+            if (Process.status == Enum.processStatus.FINISH_GET_OBSIDIAN && Process.status_ticks >= 20) {
 
-                Process.status = Enum.process_status.BUILD;
+                Process.status = Enum.processStatus.BUILD;
                 Process.status_ticks = 0;
                 blueprint.clear();
 

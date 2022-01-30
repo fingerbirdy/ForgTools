@@ -52,7 +52,6 @@ public class Slider {
 
             if (mouseIn && UserInput.leftButtonDown) {
 
-                ForgTools.sendClientChat(getSliderValue(elementWrapper, (int) element[2], (int) element[4]) + " ", true);
                 ProcessInput.i.put(key, getSliderValue(elementWrapper, (int) element[2], (int) element[4]));
 
             }
