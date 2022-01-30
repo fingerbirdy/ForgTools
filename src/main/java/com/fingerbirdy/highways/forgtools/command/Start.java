@@ -16,8 +16,6 @@ public class Start {
 
         try {
 
-            Process.status = Enum.process_status.GET_OBSIDIAN;
-
             ForgTools.sendClientChat("Starting...", true);
             for (String warning : start_warnings) {
                 ForgTools.sendClientChat(warning, true);

@@ -6,9 +6,43 @@ package com.fingerbirdy.highways.forgtools.util;
 
 public class Enum {
 
-    public enum build_mode {
-        TUNNEL,
-        PAVE
+    public static int enumToInt(buildMode enumIn) {
+
+        if (enumIn == buildMode.PAVE) {
+            return 0;
+        } if (enumIn == buildMode.TUNNEL) {
+            return 1;
+        }
+        return -1;
+
+    }
+
+    public static int enumToInt(direction enumIn) {
+
+        if (enumIn == direction.PX) {
+            return 0;
+        } if (enumIn == direction.NX) {
+            return 1;
+        } if (enumIn == direction.PZ) {
+            return 2;
+        } if (enumIn == direction.NZ) {
+            return 3;
+        } if (enumIn == direction.PP) {
+            return 4;
+        } if (enumIn == direction.PM) {
+            return 5;
+        } if (enumIn == direction.MP) {
+            return 6;
+        } if (enumIn == direction.MM) {
+            return 7;
+        }
+        return -1;
+
+    }
+
+    public enum buildMode {
+        PAVE,
+        TUNNEL
     }
 
     public enum direction {
@@ -22,7 +56,7 @@ public class Enum {
         MM, // --
     }
 
-    public enum process_status {
+    public enum processStatus {
         GET_OBSIDIAN, // Needs to get more obsidian
         FINISH_GET_OBSIDIAN, // Breaking the final ender chest
         BUILD, // Building/digging
