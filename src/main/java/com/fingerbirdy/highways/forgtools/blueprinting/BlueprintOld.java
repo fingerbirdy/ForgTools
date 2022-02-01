@@ -2,11 +2,13 @@
 This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord if you would like to use any code that is within this class.
 */
 
-package com.fingerbirdy.highways.forgtools.util;
+package com.fingerbirdy.highways.forgtools.blueprinting;
 
 import com.fingerbirdy.highways.forgtools.action.Process;
 
 import com.fingerbirdy.highways.forgtools.action.Session;
+import com.fingerbirdy.highways.forgtools.util.Config;
+import com.fingerbirdy.highways.forgtools.util.Enum;
 import net.minecraft.block.Block;
 import net.minecraft.util.math.BlockPos;
 
@@ -16,7 +18,7 @@ import java.util.LinkedHashMap;
 
 import static com.fingerbirdy.highways.forgtools.ForgTools.mc;
 
-public class Blueprint {
+public class BlueprintOld {
 
     public static final LinkedHashMap<BlockPos, Block> blueprint = new LinkedHashMap<>(); // placing
     public static final LinkedHashMap<BlockPos, Block> blueprint_digging = new LinkedHashMap<>(); // breaking
@@ -399,6 +401,7 @@ public class Blueprint {
         // Check if there is nearby end chest
         BlockPos player_pos = new BlockPos(Math.round(mc.player.posX - 0.5), (int) mc.player.posY, Math.round(mc.player.posZ - 0.5));
         BlockPos[] check_poss = new BlockPos[] {player_pos.east(), player_pos.west(), player_pos.north(), player_pos.south()};
+
         for (BlockPos pos : check_poss) {
 
             if (mc.world.getBlockState(pos).getBlock() == Block.getBlockById(130)) {
@@ -419,16 +422,20 @@ public class Blueprint {
         }
 
         // Place an ender chest
-        for (BlockPos pos : check_poss) {
+        if (Process.status == Enum.processStatus.GET_OBSIDIAN) {
 
-            if (retry_blueprint.containsKey(pos) && retry_blueprint.get(pos)[0] == Block.getBlockById(130)) {
-                return;
-            }
+            for (BlockPos pos : check_poss) {
 
-            if (mc.world.getBlockState(pos.down()).isFullCube() && Math.abs(mc.player.posX - pos.getX() + 0.5) > 1 && Math.abs(mc.player.posZ - pos.getZ() + 0.5) > 1) {
+                if (retry_blueprint.containsKey(pos) && retry_blueprint.get(pos)[0] == Block.getBlockById(130)) {
+                    return;
+                }
 
-                put_to_blueprint(blueprints.blueprint, pos, Block.getBlockById(130));
-                return;
+                if (mc.world.getBlockState(pos.down()).isFullCube() && Math.abs(mc.player.posX - pos.getX() + 0.5) > 1 && Math.abs(mc.player.posZ - pos.getZ() + 0.5) > 1) {
+
+                    put_to_blueprint(blueprints.blueprint, pos, Block.getBlockById(130));
+                    return;
+
+                }
 
             }
 

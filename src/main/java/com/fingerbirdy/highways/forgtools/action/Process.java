@@ -1,6 +1,6 @@
 package com.fingerbirdy.highways.forgtools.action;
 
-import com.fingerbirdy.highways.forgtools.util.Blueprint;
+import com.fingerbirdy.highways.forgtools.blueprinting.Blueprint;
 import com.fingerbirdy.highways.forgtools.util.Config;
 import com.fingerbirdy.highways.forgtools.util.Enum;
 import com.fingerbirdy.highways.forgtools.ForgTools;
@@ -20,6 +20,24 @@ public class Process {
     public static int status_ticks = 0;
 
     public static void tick() {
+
+        // Checks if player is in a world
+        if (mc.player.world == null) {
+            return;
+        }
+
+        // Generate Blueprints
+        if (status_ticks == 0 || (int) mc.player.posX != (int) mc.player.lastTickPosX || (int) mc.player.posY != (int) mc.player.lastTickPosY || (int) mc.player.posZ != (int) mc.player.lastTickPosZ) {
+
+            if (status == Enum.processStatus.BUILD) {
+                Blueprint.generate_build();
+            }
+
+        }
+
+        if (status == Enum.processStatus.GET_OBSIDIAN || status == Enum.processStatus.FINISH_GET_OBSIDIAN) {
+            Blueprint.generate_get_obsidian();
+        }
 
         // Checks delay ticks
         if (ClientTick.ticks % Integer.parseInt(Config.config.get("delay_ticks")) != 0) {
@@ -61,19 +79,6 @@ public class Process {
 
             }
 
-        }
-
-        // Generate Blueprints
-        if (status_ticks == 0 || (int) mc.player.posX != (int) mc.player.lastTickPosX || (int) mc.player.posY != (int) mc.player.lastTickPosY || (int) mc.player.posZ != (int) mc.player.lastTickPosZ) {
-
-            if (status == Enum.processStatus.BUILD) {
-                Blueprint.generate_build();
-            }
-
-        }
-
-        if (status == Enum.processStatus.GET_OBSIDIAN || status == Enum.processStatus.FINISH_GET_OBSIDIAN) {
-            Blueprint.generate_get_obsidian();
         }
 
         // Do the action

@@ -1,9 +1,11 @@
 package com.fingerbirdy.highways.forgtools.gui.clickgui;
 
+import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.fingerbirdy.highways.forgtools.command.Start;
 import com.fingerbirdy.highways.forgtools.command.Stop;
 import com.fingerbirdy.highways.forgtools.util.Config;
 
+import java.net.URI;
 import java.util.HashMap;
 
 public class ProcessInput {
@@ -34,6 +36,41 @@ public class ProcessInput {
 
                 }
 
+                // behaviour/delayticks
+                else if (id.equals("behaviour/element/delayticks/contents")) {
+
+                    Config.config.replace("delay_ticks", String.valueOf(i.get(id)));
+
+                }
+
+                // behaviour/obsidiangoal
+                else if (id.equals("behaviour/element/obsidiangoal/contents")) {
+
+                    Config.config.replace("target_obsidian_refill_stacks", String.valueOf(i.get(id)));
+
+                }
+
+                // behaviour/obsidianthreshold
+                else if (id.equals("behaviour/element/obsidianthreshold/contents")) {
+
+                    Config.config.replace("obsidian_refill_threshold", String.valueOf(i.get(id)));
+
+                }
+
+                // behaviour/nukerlimit
+                else if (id.equals("behaviour/element/nukerlimit/contents")) {
+
+                    Config.config.replace("nuker_limit", String.valueOf(i.get(id)));
+
+                }
+
+                // behaviour/nukerlimit
+                else if (id.equals("behaviour/element/nukertimeout/contents")) {
+
+                    Config.config.replace("nuker_timeout", String.valueOf(i.get(id)));
+
+                }
+
                 i.remove(id);
 
             }
@@ -57,6 +94,20 @@ public class ProcessInput {
 
                         Stop.execute(new String[]{"clickgui"});
 
+                    }
+
+                }
+                // forgtools/issue
+                if (id.equals("forgtools/element/issue/contents")) {
+
+                    try {
+                        java.awt.Desktop.getDesktop().browse(URI.create(ForgTools.GITHUB + "/issues/new"));
+                        ForgTools.sendClientChat("Opening github...", true);
+                        ForgTools.sendClientChat("When writing an issue, keep in mind the following -", true);
+                        ForgTools.sendClientChat(" - The title should describe the issue", true);
+                        ForgTools.sendClientChat(" - The issue should include context and, if possible, how to reproduce it", true);
+                    } catch (Exception e) {
+                        ForgTools.sendClientChat("Failed to open the webpage... ironic", true);
                     }
 
                 }

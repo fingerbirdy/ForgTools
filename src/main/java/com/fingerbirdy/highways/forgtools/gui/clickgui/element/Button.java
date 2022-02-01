@@ -1,6 +1,5 @@
 package com.fingerbirdy.highways.forgtools.gui.clickgui.element;
 
-import com.fingerbirdy.highways.forgtools.ForgTools;
 import com.fingerbirdy.highways.forgtools.gui.clickgui.ProcessInput;
 import com.fingerbirdy.highways.forgtools.gui.clickgui.UserInput;
 import net.minecraft.client.gui.FontRenderer;
@@ -8,26 +7,14 @@ import net.minecraft.client.gui.Gui;
 
 import java.util.HashMap;
 
-public class Slider {
+public class Button {
 
-    // Object[] {String elementWrapperId, String text, int min, int value, int max}
+    // Object[] {String elementWrapperId, String text}
     public static HashMap<String, Object[]> elements = new HashMap<>();
 
-    public static void addElement(String id, String elementWrapperId, String text, int min, int value, int max) {
+    public static void addElement(String id, String elementWrapperId, String text) {
 
-        elements.put(id, new Object[] {elementWrapperId, text, min, value, max});
-
-    }
-
-    private static int getSliderWidth(int min, int value, int max) {
-
-        return (int) ((float) (value - min) / (max - min) * Background.width);
-
-    }
-
-    private static int getSliderValue(Object[] elementWrapper, int min, int max) {
-
-        return Math.round(((float) UserInput.mouseX - (int) elementWrapper[2]) / (Background.width) * (max - min) + min);
+        elements.put(id, new Object[] {elementWrapperId, text});
 
     }
 
@@ -50,16 +37,13 @@ public class Slider {
                 color = Background.elementColorHover;
             }
 
-            if (mouseIn && UserInput.leftButtonDown) {
+            if (mouseIn && UserInput.leftButtonClicked) {
 
-                ProcessInput.i.put(key, getSliderValue(elementWrapper, (int) element[2], (int) element[4]));
+                ProcessInput.b.put(key, true);
 
             }
 
-            Gui.drawRect((int) elementWrapper[2], (int) elementWrapper[3], (int) elementWrapper[2] + getSliderWidth((int) element[2], (int) element[3], (int) element[4]), (int) elementWrapper[3] + ElementWrapper.elementHeight, color);
-
             fontRenderer.drawStringWithShadow((String) element[1], (int) elementWrapper[2] + ElementWrapper.elementMargin, (int) elementWrapper[3] + ElementWrapper.elementMargin, Background.textColor);
-            fontRenderer.drawStringWithShadow(String.valueOf(element[3]), (int) elementWrapper[2] - ElementWrapper.elementMargin + Background.width - fontRenderer.getStringWidth(String.valueOf(element[3])), (int) elementWrapper[3] + ElementWrapper.elementMargin, Background.textColor);
 
         }
 

@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class Background {
 
-    public static final int width = 100;
+    public static final int width = 150;
     public static final int backgroundColor = 0x77000000;
     public static final int elementColor = 0xFF00AA00;
     public static final int elementColorHover = 0xFF00CC00;
