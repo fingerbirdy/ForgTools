@@ -4,8 +4,7 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
 
 package com.fingerbirdy.highways.forgtools.action;
 
-import com.fingerbirdy.highways.forgtools.ForgTools;
-import com.fingerbirdy.highways.forgtools.util.Blueprint;
+import com.fingerbirdy.highways.forgtools.blueprinting.Blueprint;
 import com.fingerbirdy.highways.forgtools.event.ClientTick;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

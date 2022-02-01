@@ -20,6 +20,7 @@ public class Header {
 
             String[] element = elements.get(key);
             Object[] elementWrapper = ElementWrapper.elements.get(element[0]);
+
             fontRenderer.drawStringWithShadow(element[1], (int) elementWrapper[2] + ElementWrapper.elementMargin, (int) elementWrapper[3] + ElementWrapper.elementMargin, Background.textColor);
 
         }

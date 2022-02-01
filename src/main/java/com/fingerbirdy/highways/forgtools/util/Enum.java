@@ -63,4 +63,15 @@ public class Enum {
         CONTINUE, // Moving forward
     }
 
+    public enum action {
+        PLACE,
+        BREAK
+    }
+
+    public enum actionPriority {
+        PLACE3,
+        BREAK2,
+        PLACE1
+    }
+
 }

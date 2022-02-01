@@ -1,93 +1,123 @@
 package com.fingerbirdy.highways.forgtools.action;
 
-import com.fingerbirdy.highways.forgtools.util.Blueprint;
+import com.fingerbirdy.highways.forgtools.blueprinting.Blueprint;
 import com.fingerbirdy.highways.forgtools.event.ClientTick;
 import com.fingerbirdy.highways.forgtools.ForgTools;
-import com.fingerbirdy.highways.forgtools.util.ServerTps;
+import com.fingerbirdy.highways.forgtools.util.Config;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.ArrayList;
+
 import static com.fingerbirdy.highways.forgtools.ForgTools.mc;
 
 public class Dig {
 
-    public static boolean digging = false;
-    public static int ticksNeeded = Integer.MAX_VALUE;
+    public static ArrayList<BlockPos> mining = new ArrayList<>();
+    public static int toTicksNeeded = Integer.MAX_VALUE;
+    public static int nukerTimeoutTicks = 0;
 
     public static void tick(Blueprint.blueprints blueprint) {
 
-        if (!Blueprint.blueprint_digging.isEmpty()) {
+        boolean nukerActivated = false;
+        int nukerLimit = Integer.parseInt(Config.config.get("nuker_limit"));
 
-            BlockPos key = Blueprint.blueprint_digging.keySet().stream().findFirst().get();
-            NetHandlerPlayClient connection = mc.player.connection;
+        if (nukerTimeoutTicks > 0) {
+            nukerTimeoutTicks--;
+        }
 
-            // Removes unbreakable blocks
-            if (mc.world.getBlockState(key).getBlock() == Block.getBlockById(7)) {
-                Blueprint.blueprint_digging.remove(key);
-                return;
-            }
+        // Starts mining blocks
+        if (mining.size() == 0) {
 
-            // Start digging a new block
-            if (!digging) {
+            if (!Blueprint.blueprint_digging.isEmpty()) {
 
-                if (Inventory.set_hot_bar_0(278)) {
+                Object[] diggingPoss = Blueprint.blueprint_digging.keySet().toArray();
+                Inventory.set_hot_bar_0(278);
 
-                    digging = true;
-                    int ticksNeededRaw = calculate_ticks(key);
-                    ticksNeeded = ticksNeededRaw + ClientTick.ticks;
+                for (Object posO : diggingPoss) {
 
-                    if (ticksNeededRaw == -1) {
+                    BlockPos pos = (BlockPos) posO;
+                    int ticksNeeded = calculate_ticks(pos);
 
-                        Blueprint.blueprint_digging.remove(key);
-                        return;
+                    // AIR/LIQUID FLOWING
+                    if (ticksNeeded == -1 || ticksNeeded == -2) {
+                        Blueprint.blueprint_digging.remove(pos);
+                        continue;
+                    }
 
-                    } else if (ticksNeededRaw == -2) {
+                    // LIQUID SOURCE
+                    if (ticksNeeded == -3) {
+                        Blueprint.priority_blueprint.put(pos, Block.getBlockById(87));
+                    }
 
-                        return;
+                    // INSTANT MINE
+                    if (ticksNeeded == 1 && nukerTimeoutTicks <= 0) {
 
-                    } else if (ticksNeededRaw == -3) {
-
-                        Blueprint.put_to_blueprint(Blueprint.blueprints.priority_blueprint, key, Block.getBlockById(87));
-                        return;
+                        toTicksNeeded = ClientTick.ticks + 1;
+                        mining.add(pos);
+                        nukerActivated = true;
+                        sendDigPacket(pos, true);
 
                     } else {
 
-                        connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, key, EnumFacing.UP));
-                        Session.current_action = "Dig " + key;
+                        if (!nukerActivated) {
+
+                            toTicksNeeded = ClientTick.ticks + ticksNeeded;
+                            mining.add(pos);
+                            sendDigPacket(pos, true);
+
+                        }
+
+                        break;
 
                     }
 
-                } else {
-
-                    ForgTools.sendClientChat("Could not find pickaxe in inventory", true);
-
                 }
 
-            } else {
-
-                // stop digging the current block if needed
-                //if (mc.world.getBlockState(key).getBlock() == Block.getBlockById(0)) {
-                if (ClientTick.ticks >= ticksNeeded) {
-
-                    digging = false;
-                    Session.blocks_mined++;
-                    ticksNeeded = Integer.MAX_VALUE;
-                    Blueprint.blueprint_digging.remove(key);
-                    connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, key, EnumFacing.UP));
-
-                }
+                mc.player.swingArm(EnumHand.MAIN_HAND);
 
             }
 
-            connection.sendPacket(new CPacketAnimation(EnumHand.MAIN_HAND));
-            mc.player.swingArm(EnumHand.MAIN_HAND);
+        }
 
+        // Stops mining blocks
+        else {
+
+            if (ClientTick.ticks >= toTicksNeeded) {
+
+                if (mining.size() > 1) {
+                    nukerTimeoutTicks = Integer.parseInt(Config.config.get("nuker_timeout"));
+                }
+
+                for (BlockPos pos : mining) {
+                    sendDigPacket(pos, false);
+                }
+
+                mining.clear();
+
+            }
+
+        }
+
+    }
+
+    private static void sendDigPacket(BlockPos pos, boolean start) {
+
+        NetHandlerPlayClient connection = mc.getConnection();
+
+        if (connection == null) {
+            return;
+        }
+
+        if (start) {
+            connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.START_DESTROY_BLOCK, pos, EnumFacing.UP));
+        } else {
+            connection.sendPacket(new CPacketPlayerDigging(CPacketPlayerDigging.Action.STOP_DESTROY_BLOCK, pos, EnumFacing.UP));
         }
 
     }
@@ -116,7 +146,7 @@ public class Dig {
 
         }
 
-        return (int) Math.ceil((1 / mc.world.getBlockState(block).getPlayerRelativeBlockHardness(mc.player, mc.player.world, block)) * ServerTps.dynamic_delay_multiplier);
+        return (int) Math.ceil((1 / mc.world.getBlockState(block).getPlayerRelativeBlockHardness(mc.player, mc.player.world, block)));
 
     }
 

@@ -1,6 +1,6 @@
 package com.fingerbirdy.highways.forgtools.action;
 
-import com.fingerbirdy.highways.forgtools.util.Blueprint;
+import com.fingerbirdy.highways.forgtools.blueprinting.Blueprint;
 import com.fingerbirdy.highways.forgtools.util.Config;
 import com.fingerbirdy.highways.forgtools.util.Enum;
 import com.fingerbirdy.highways.forgtools.ForgTools;
@@ -29,10 +29,11 @@ public class Session {
         Blueprint.blueprint_digging.clear();
         Blueprint.retry_blueprint.clear();
         Blueprint.priority_blueprint.clear();
-        Dig.digging = false;
+        Dig.mining.clear();
         obsidian_placed = 0;
         blocks_mined = 0;
         start_timestamp = System.nanoTime();
+        exceptions.clear();
 
         // Check for alignment errors
         String axis_offset_message = "You are off axis! If you would like to start anyways, set allow_axis_offset to false.";

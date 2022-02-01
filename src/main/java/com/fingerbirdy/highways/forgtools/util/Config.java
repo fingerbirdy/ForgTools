@@ -33,6 +33,8 @@ public class Config {
         config.put("target_obsidian_refill_stacks", "3"); // int
         config.put("obsidian_refill_threshold", "16"); // int
         config.put("delay_ticks", "2"); // int
+        config.put("nuker_limit", "64"); // int
+        config.put("nuker_timeout", "10"); // int
 
         try {
 
@@ -46,7 +48,7 @@ public class Config {
                     String line_value = line.split("=")[1];
 
                     // integers
-                    if (line_key.equals("allowed_logging_severity") || line_key.equals("width") || line_key.equals("height") || line_key.equals("target_obsidian_refill_stacks") || line_key.equals("obsidian_refill_threshold") || line_key.equals("delay_ticks")) {
+                    if (line_key.equals("allowed_logging_severity") || line_key.equals("width") || line_key.equals("height") || line_key.equals("target_obsidian_refill_stacks") || line_key.equals("obsidian_refill_threshold") || line_key.equals("delay_ticks") || line_key.equals("nuker_limit") || line_key.equals("nuker_timeout")) {
                         Integer.parseInt(line_value);
                         config.put(line_key, line_value);
                         continue;

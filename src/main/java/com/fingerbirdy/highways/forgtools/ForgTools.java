@@ -11,8 +11,8 @@ This class is a part of Forg Tools. Feel free to PM #fingerbirdy#8056 on Discord
 
 /* TODO fix
 *   auto obsidian
+*   bot won't clear obsidian
 *  TODO for release
-*   click gui
 *   baritone implementation
 */
 
@@ -41,6 +41,7 @@ public class ForgTools {
 
     public static final String MOD_ID = "forgtools";
     public static final String MOD_NAME = "foRg tools";
+    public static final String GITHUB = "https://github.com/fingerbirdy/ForgTools";
     public static final String VERSION = "0.1.0-SNAPSHOT-0";
     public static final String VERSION_URL = "https://raw.githubusercontent.com/fingerbirdy/ForgTools/version/version.json";
     public static String latestVersion = VERSION;
